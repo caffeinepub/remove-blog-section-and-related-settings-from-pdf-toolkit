@@ -1,0 +1,56 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-17T10:57:41.015Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 2,
+    "implemented": 2,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Update the app’s user-visible name/branding everywhere it appears in the frontend from “PDF Toolkit” to “PDF Vaulty”, including: document/page title, header brand text, logo alt text, and any home-page hero copy that currently says “PDF Toolkit”.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/index.html",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/components/Footer.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/index.html",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/components/Footer.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Update i18n translation strings so any English UI copy that currently contains the old app name “PDF Toolkit” is updated to “PDF Vaulty” while preserving existing translation key structure.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/i18n/translations.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/i18n/translations.ts"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/index.html",
+    "frontend/src/components/Footer.tsx",
+    "frontend/src/components/Header.tsx",
+    "frontend/src/components/LanguageSelector.tsx",
+    "frontend/src/i18n/translations.ts",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

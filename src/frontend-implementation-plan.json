@@ -1,0 +1,49 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Rename frontend branding from PDF Toolkit to PDF Vaulty",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Update all user-visible frontend branding from “PDF Toolkit” to “PDF Vaulty” (document title, header brand text, logo alt text, and hero copy).",
+      "acceptanceCriteria": [
+        "Browser tab/title displays “PDF Vaulty” (not “PDF Toolkit”).",
+        "Top navigation/header brand displays “PDF Vaulty” and the logo image alt text is “PDF Vaulty”.",
+        "Homepage hero heading no longer contains “PDF Toolkit” and instead shows “PDF Vaulty”.",
+        "No remaining user-facing English strings display “PDF Toolkit” in the UI."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/index.html",
+          "operation": "modify",
+          "description": "Update the static HTML document <title> from “PDF Toolkit” to “PDF Vaulty” so the browser tab/title reflects the new branding."
+        },
+        {
+          "path": "frontend/src/components/Header.tsx",
+          "operation": "modify",
+          "description": "Update the header brand text and the logo image alt text from “PDF Toolkit” to “PDF Vaulty” while keeping existing navigation structure intact."
+        },
+        {
+          "path": "frontend/src/components/Footer.tsx",
+          "operation": "modify",
+          "description": "Update the non-UI appIdentifier fallback value from “pdf-toolkit” to “pdf-vaulty” to align ancillary branding/tracking identifiers with the new app name."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Update English i18n strings containing “PDF Toolkit” to “PDF Vaulty” without changing translation keys.",
+      "acceptanceCriteria": [
+        "In the English locale, i18n-provided strings that previously rendered “PDF Toolkit” now render “PDF Vaulty” (e.g., the Home hero highlighted word).",
+        "No broken/missing translation keys are introduced (no undefined/blank text where translations are used)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/i18n/translations.ts",
+          "operation": "modify",
+          "description": "Replace English translation values that reference “PDF Toolkit” with “PDF Vaulty” (e.g., home hero highlight and any other occurrences), preserving the existing translation key structure and leaving keys unchanged."
+        }
+      ]
+    }
+  ]
+}

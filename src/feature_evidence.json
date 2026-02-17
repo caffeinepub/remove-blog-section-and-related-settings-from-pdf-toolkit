@@ -1,0 +1,47 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-update-the-app-s-user-visible-name-branding-everywhere-it-appears-in-the-frontend-from-pdf-toolkit-to-pdf-vaulty-including-document-page-title-header-brand-text-logo-alt-text-and-any-home-page-hero-copy-that-currently-says-pdf-toolkit",
+      "featureTitle": "Update the app’s user-visible name/branding everywhere it appears in the frontend from “PDF Toolkit” to “PDF Vaulty”, including: document/page title, header brand text, logo alt text, and any home-page hero copy that currently says “PDF Toolkit”.",
+      "files": [
+        "frontend/index.html",
+        "frontend/src/components/Footer.tsx",
+        "frontend/src/components/Header.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-i18n-translation-strings-so-any-english-ui-copy-that-currently-contains-the-old-app-name-pdf-toolkit-is-updated-to-pdf-vaulty-while-preserving-existing-translation-key-structure",
+      "featureTitle": "Update i18n translation strings so any English UI copy that currently contains the old app name “PDF Toolkit” is updated to “PDF Vaulty” while preserving existing translation key structure.",
+      "files": [
+        "frontend/src/i18n/translations.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

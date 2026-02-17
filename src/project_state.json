@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "PDF utility app rebranded from \"PDF Toolkit\" to \"PDF Vaulty\"; user also wants the in-app/app-store displayed app name updated accordingly.",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-update-the-app-s-user-visible-name-branding-everywhere-it-appears-in-the-frontend-from-pdf-toolkit-to-pdf-vaulty-including-document-page-title-header-brand-text-logo-alt-text-and-any-home-page-hero-copy-that-currently-says-pdf-toolkit",
+      "title": "Update the app’s user-visible name/branding everywhere it appears in the frontend from “PDF Toolkit” to “PDF Vaulty”, including: document/page title, header brand text, logo alt text, and any home-page hero copy that currently says “PDF Toolkit”.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-i18n-translation-strings-so-any-english-ui-copy-that-currently-contains-the-old-app-name-pdf-toolkit-is-updated-to-pdf-vaulty-while-preserving-existing-translation-key-structure",
+      "title": "Update i18n translation strings so any English UI copy that currently contains the old app name “PDF Toolkit” is updated to “PDF Vaulty” while preserving existing translation key structure.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Change the app name everywhere it appears (in-app title/branding/app listing) to \"PDF Vaulty\"",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "PDF Vaulty",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

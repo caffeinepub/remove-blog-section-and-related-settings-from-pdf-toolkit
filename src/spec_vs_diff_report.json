@@ -1,0 +1,50 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-17T10:57:41.012Z",
+  "summary": "Brand rename to “PDF Vaulty” is partially implemented (document title and header brand/alt updated). However, at least one English i18n string still references the old branding (“PDF toolkit”), and several unrelated UI/monetization-style changes (footer ad spaces/UTM link) appear in the diff without being requested.",
+  "missing_requirements": [
+    {
+      "id": "REQ-1",
+      "requirement": "Remove/replace all remaining user-facing English UI strings that still reference the old app name/branding (PDF Toolkit) with “PDF Vaulty”.",
+      "reason": "An English home CTA subtitle still contains “PDF toolkit”, which is user-facing and conflicts with the acceptance criterion that no remaining UI strings display the old name/branding.",
+      "evidence": [
+        "frontend/src/i18n/translations.ts (en: 'home.cta.subtitle': 'Join thousands of users who trust our PDF toolkit')"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "Update English i18n translation strings that contain the old app name “PDF Toolkit” to “PDF Vaulty” while preserving keys.",
+      "reason": "The English translation content still contains the old branding word “PDF toolkit” within an i18n-provided string; it should be updated while keeping the same translation key.",
+      "evidence": [
+        "frontend/src/i18n/translations.ts (en: 'home.cta.subtitle': 'Join thousands of users who trust our PDF toolkit')"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Footer monetization/advertisement placeholders (three ad spaces) and a UTM-tracked caffeine.ai attribution link.",
+      "reason": "The BuildRequest is strictly about renaming branding strings to “PDF Vaulty” and explicitly states no changes to PDF tool functionality or other unrelated behavior; adding ad placements/UTM attribution is not requested.",
+      "evidence": [
+        "frontend/src/components/Footer.tsx (three “Ad Space” blocks; caffeine.ai link with UTM params; appIdentifier logic)"
+      ]
+    },
+    {
+      "description": "Project metadata/state updates indicating app-store/in-app displayed name desires and new AR items.",
+      "reason": "BuildRequest does not request modifying project tracking/state files; these changes are outside the specified frontend branding rename work.",
+      "evidence": [
+        "project_state.json (summary/new_feature_requests entries)"
+      ]
+    }
+  ],
+  "confidence": 0.68,
+  "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/index.html",
+    "frontend/src/components/Footer.tsx",
+    "frontend/src/components/Header.tsx",
+    "frontend/src/components/LanguageSelector.tsx",
+    "frontend/src/i18n/translations.ts",
+    "project_state.json"
+  ]
+}

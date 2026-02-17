@@ -1,0 +1,68 @@
+{
+  "kind": "build_request",
+  "title": "Rename in-app branding to PDF Vaulty",
+  "projectName": "PDF Vaulty",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Update the app’s user-visible name/branding everywhere it appears in the frontend from “PDF Toolkit” to “PDF Vaulty”, including: document/page title, header brand text, logo alt text, and any home-page hero copy that currently says “PDF Toolkit”.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1",
+          "msg-2"
+        ],
+        "quotes": [
+          "Rename this project to PDF Vaulty.",
+          "also change the app name as well please"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Browser tab/title displays “PDF Vaulty” (not “PDF Toolkit”).",
+        "Top navigation/header brand displays “PDF Vaulty” and the logo image alt text is “PDF Vaulty”.",
+        "Homepage hero heading no longer contains “PDF Toolkit” and instead shows “PDF Vaulty”.",
+        "No remaining user-facing English strings display “PDF Toolkit” in the UI."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Update i18n translation strings so any English UI copy that currently contains the old app name “PDF Toolkit” is updated to “PDF Vaulty” while preserving existing translation key structure.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "also change the app name as well please"
+        ]
+      },
+      "acceptanceCriteria": [
+        "In the English locale, i18n-provided strings that previously rendered “PDF Toolkit” now render “PDF Vaulty” (e.g., the Home hero highlighted word).",
+        "No broken/missing translation keys are introduced (no undefined/blank text where translations are used)."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not edit files under frontend/src/components/ui (read-only).",
+    "Do not edit immutable hook bootstrap files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx."
+  ],
+  "nonGoals": [
+    "No changes to PDF tool functionality, file upload behavior, or backend canister logic.",
+    "No new authentication providers or external integrations."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}
