@@ -10,10 +10,21 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface AdRevenueMetrics {
+  'clicks' : bigint,
+  'revenue' : number,
+  'date' : string,
+  'impressions' : bigint,
+}
 export interface AdSenseConfig {
+  'headerAdUnitId' : string,
+  'enableInContentAds' : boolean,
   'enableFooterBanner' : boolean,
-  'enableToolSectionAds' : boolean,
   'publisherId' : string,
+  'sidebarAdUnitId' : string,
+  'enableSidebarAds' : boolean,
+  'footerAdUnitId' : string,
+  'inContentAdUnitId' : string,
   'enableHeaderBanner' : boolean,
 }
 export type ExternalBlob = Uint8Array;
@@ -59,12 +70,19 @@ export interface _SERVICE {
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'deleteFile' : ActorMethod<[string], undefined>,
   'getAdSenseConfig' : ActorMethod<[], AdSenseConfig>,
+  'getAggregateRevenue' : ActorMethod<[string, string], AdRevenueMetrics>,
+  'getAllRevenueMetrics' : ActorMethod<[], Array<AdRevenueMetrics>>,
   'getCallerFiles' : ActorMethod<[], Array<FileMetadata>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getFileMetadata' : ActorMethod<[string], FileMetadata>,
+  'getRevenueByRange' : ActorMethod<[string, string], Array<AdRevenueMetrics>>,
+  'getRevenueMetrics' : ActorMethod<[string], AdRevenueMetrics>,
+  'getTrafficCounter' : ActorMethod<[], bigint>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'incrementAndGetTrafficCounter' : ActorMethod<[], bigint>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'recordAdMetrics' : ActorMethod<[string, bigint, bigint, number], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'updateAdSenseConfig' : ActorMethod<[AdSenseConfig], undefined>,
   'uploadFile' : ActorMethod<[string, ExternalBlob], undefined>,

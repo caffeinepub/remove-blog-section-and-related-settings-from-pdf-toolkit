@@ -1,12 +1,14 @@
 # Specification
 
 ## Summary
-**Goal:** Rename all user-visible in-app branding from “PDF Toolkit” to “PDF Vaulty”.
+**Goal:** Add PowerPoint to PDF conversion feature to PDF Vaulty.
 
 **Planned changes:**
-- Update the document/page title to display “PDF Vaulty”.
-- Update header/nav brand text to “PDF Vaulty” and set the logo image alt text to “PDF Vaulty”.
-- Update homepage hero copy so any “PDF Toolkit” text becomes “PDF Vaulty”.
-- Update English i18n strings that contain “PDF Toolkit” to “PDF Vaulty”, preserving existing translation key structure.
+- Create PowerPointToPdfPage component with drag-and-drop upload for .ppt and .pptx files
+- Implement powerPointToPdf.ts utility function for client-side PowerPoint to PDF conversion
+- Add PowerPoint to PDF card to ConvertIntoPdfPage grid
+- Register /tools/powerpoint-to-pdf route in App.tsx
+- Add English and Spanish translations for PowerPoint to PDF feature
+- Add PowerPoint to PDF link to homepage tool grid
 
-**User-visible outcome:** Users see “PDF Vaulty” consistently across the browser tab title, header branding, and homepage hero text, with no remaining “PDF Toolkit” strings in the English UI.
+**User-visible outcome:** Users can convert PowerPoint presentations to PDF format through a new dedicated page, accessible from the homepage and the "Convert into PDF" section.

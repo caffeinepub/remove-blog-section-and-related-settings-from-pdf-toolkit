@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import DragAndDropFileZone from '../components/DragAndDropFileZone';
 import { useI18n } from '../i18n/useI18n';
 import { compressPdf } from '../utils/compressPdf';
+import AdSenseHeader from '../components/AdSenseHeader';
+import AdSenseSidebar from '../components/AdSenseSidebar';
 
 export default function CompressPdfPage() {
   const { identity } = useInternetIdentity();
@@ -111,109 +113,130 @@ export default function CompressPdfPage() {
 
   return (
     <div className="container px-4 py-8 md:py-12">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">{t('compressPdf.title')}</h1>
-          <p className="text-sm md:text-base text-muted-foreground">{t('compressPdf.subtitle')}</p>
-        </div>
+      <AdSenseHeader />
+      
+      <div className="max-w-6xl mx-auto">
+        <div className="lg:grid lg:grid-cols-[1fr_300px] lg:gap-6">
+          <div>
+            <div className="mb-6 md:mb-8">
+              <h1 className="text-2xl md:text-3xl font-bold mb-2">{t('compressPdf.title')}</h1>
+              <p className="text-sm md:text-base text-muted-foreground">{t('compressPdf.subtitle')}</p>
+            </div>
 
-        {/* Upload Card */}
-        <DragAndDropFileZone
-          onFileDrop={handleFileDrop}
-          accept=".pdf,application/pdf"
-          disabled={isCompressing}
-          multiple={false}
-          dragOverlayTextSingle={t('compressPdf.dragOverlay')}
-        >
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Upload className="h-5 w-5" />
-                {t('compressPdf.upload.title')}
-              </CardTitle>
-              <CardDescription>{t('compressPdf.upload.description')}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,application/pdf"
-                onChange={handleFileSelect}
-                className="hidden"
-                id="pdf-file-upload"
-                disabled={isCompressing}
-              />
-              <label htmlFor="pdf-file-upload">
-                <Button asChild disabled={isCompressing} size="lg" className="w-full sm:w-auto">
-                  <span className="cursor-pointer">
-                    <Upload className="mr-2 h-4 w-4" />
-                    {t('compressPdf.upload.button')}
-                  </span>
-                </Button>
-              </label>
-            </CardContent>
-          </Card>
-        </DragAndDropFileZone>
+            {/* Upload Card */}
+            <DragAndDropFileZone
+              onFileDrop={handleFileDrop}
+              accept=".pdf,application/pdf"
+              disabled={isCompressing}
+              multiple={false}
+              dragOverlayTextSingle={t('compressPdf.dragOverlay')}
+            >
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Upload className="h-5 w-5" />
+                    {t('compressPdf.upload.title')}
+                  </CardTitle>
+                  <CardDescription>{t('compressPdf.upload.description')}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".pdf,application/pdf"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    id="pdf-file-upload"
+                    disabled={isCompressing}
+                  />
+                  <label htmlFor="pdf-file-upload">
+                    <Button asChild disabled={isCompressing} size="lg" className="w-full sm:w-auto">
+                      <span className="cursor-pointer">
+                        <Upload className="mr-2 h-4 w-4" />
+                        {t('compressPdf.upload.button')}
+                      </span>
+                    </Button>
+                  </label>
+                </CardContent>
+              </Card>
+            </DragAndDropFileZone>
 
-        {/* Selected File Display */}
-        {selectedFile && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                {t('compressPdf.file.title')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="p-4 border rounded-lg bg-card">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{selectedFile.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {t('compressPdf.file.originalSize')}: {formatFileSize(originalSize)}
-                    </p>
+            {/* Selected File Display */}
+            {selectedFile && (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    {t('compressPdf.file.title')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">{t('compressPdf.file.name')}</span>
+                      <span className="text-sm font-medium">{selectedFile.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">{t('compressPdf.file.originalSize')}</span>
+                      <span className="text-sm font-medium">{formatFileSize(originalSize)}</span>
+                    </div>
+                    {compressedSize > 0 && (
+                      <>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-muted-foreground">{t('compressPdf.file.compressedSize')}</span>
+                          <span className="text-sm font-medium text-green-600">{formatFileSize(compressedSize)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-muted-foreground">{t('compressPdf.file.reduction')}</span>
+                          <span className="text-sm font-medium text-green-600">
+                            {((originalSize - compressedSize) / originalSize * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                      </>
+                    )}
                   </div>
-                  <Minimize2 className="h-5 w-5 text-muted-foreground ml-4" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                </CardContent>
+              </Card>
+            )}
 
-        {/* Compress Button */}
-        {selectedFile && (
-          <Card>
-            <CardContent className="pt-6">
-              <Button
-                onClick={handleCompress}
-                disabled={isCompressing}
-                size="lg"
-                className="w-full"
-              >
-                {isCompressing ? (
-                  <>
-                    <Download className="mr-2 h-4 w-4 animate-pulse" />
-                    {t('compressPdf.compress.compressing')}
-                  </>
-                ) : (
-                  <>
-                    <Minimize2 className="mr-2 h-4 w-4" />
-                    {t('compressPdf.compress.button')}
-                  </>
-                )}
-              </Button>
+            {/* Compress Button */}
+            {selectedFile && (
+              <Card>
+                <CardContent className="pt-6">
+                  <Button
+                    onClick={handleCompress}
+                    disabled={isCompressing}
+                    size="lg"
+                    className="w-full"
+                  >
+                    {isCompressing ? (
+                      <>
+                        <Minimize2 className="mr-2 h-4 w-4 animate-pulse" />
+                        {t('compressPdf.compress.compressing')}
+                      </>
+                    ) : (
+                      <>
+                        <Minimize2 className="mr-2 h-4 w-4" />
+                        {t('compressPdf.compress.button')}
+                      </>
+                    )}
+                  </Button>
 
-              {isCompressing && compressProgress > 0 && (
-                <div className="mt-4 space-y-2">
-                  <Progress value={compressProgress} className="w-full" />
-                  <p className="text-sm text-muted-foreground text-center">
-                    {t('compressPdf.compress.progress', { progress: compressProgress })}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
+                  {isCompressing && compressProgress > 0 && (
+                    <div className="mt-4 space-y-2">
+                      <Progress value={compressProgress} className="w-full" />
+                      <p className="text-sm text-muted-foreground text-center">
+                        {t('compressPdf.compress.progress', { progress: compressProgress })}
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          <AdSenseSidebar />
+        </div>
       </div>
     </div>
   );

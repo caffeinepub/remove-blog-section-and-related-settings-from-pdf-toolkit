@@ -1,68 +1,143 @@
 {
   "kind": "build_request",
-  "title": "Rename in-app branding to PDF Vaulty",
+  "title": "Add PowerPoint to PDF conversion feature",
   "projectName": "PDF Vaulty",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the app’s user-visible name/branding everywhere it appears in the frontend from “PDF Toolkit” to “PDF Vaulty”, including: document/page title, header brand text, logo alt text, and any home-page hero copy that currently says “PDF Toolkit”.",
+      "text": "Add a new PowerPointToPdfPage component at frontend/src/pages/PowerPointToPdfPage.tsx that allows users to upload PowerPoint files (.ppt, .pptx) and convert them to PDF format with drag-and-drop file upload support, following the same UI patterns as ExcelToPdfPage and WordToPdfPage",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1",
-          "msg-2"
+          "msg-last"
         ],
         "quotes": [
-          "Rename this project to PDF Vaulty.",
-          "also change the app name as well please"
+          "lets add powerpoint to pdf!"
         ]
       },
       "acceptanceCriteria": [
-        "Browser tab/title displays “PDF Vaulty” (not “PDF Toolkit”).",
-        "Top navigation/header brand displays “PDF Vaulty” and the logo image alt text is “PDF Vaulty”.",
-        "Homepage hero heading no longer contains “PDF Toolkit” and instead shows “PDF Vaulty”.",
-        "No remaining user-facing English strings display “PDF Toolkit” in the UI."
+        "Page accepts .ppt and .pptx file types for upload",
+        "Drag-and-drop file zone validates PowerPoint file types",
+        "Conversion progress tracking displays during processing",
+        "Successful conversion allows user to download the resulting PDF",
+        "Page requires authentication before allowing conversion",
+        "AdSense ad placements match the pattern used in other conversion pages"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Update i18n translation strings so any English UI copy that currently contains the old app name “PDF Toolkit” is updated to “PDF Vaulty” while preserving existing translation key structure.",
+      "text": "Create a utility function frontend/src/utils/powerPointToPdf.ts that converts PowerPoint files to PDF format, following the same structure and error handling patterns as excelToPdf.ts and wordToPdf.ts, with progress callback support",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-last"
         ],
         "quotes": [
-          "also change the app name as well please"
+          "lets add powerpoint to pdf!"
         ]
       },
       "acceptanceCriteria": [
-        "In the English locale, i18n-provided strings that previously rendered “PDF Toolkit” now render “PDF Vaulty” (e.g., the Home hero highlighted word).",
-        "No broken/missing translation keys are introduced (no undefined/blank text where translations are used)."
+        "Function accepts PowerPoint file blobs as input",
+        "Function validates file type is .ppt or .pptx",
+        "Function provides progress callback for UI updates",
+        "Function returns a PDF blob on successful conversion",
+        "Function throws descriptive errors for invalid inputs or conversion failures"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add a PowerPoint to PDF card to the ConvertIntoPdfPage grid at frontend/src/pages/ConvertIntoPdfPage.tsx that links to the new PowerPoint conversion page, positioned after the Excel to PDF card and following the same styling pattern",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "lets add powerpoint to pdf!"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Card displays appropriate icon and title for PowerPoint to PDF",
+        "Card links to /tools/powerpoint-to-pdf route",
+        "Card styling matches existing Word and Excel conversion cards",
+        "Card is positioned logically in the grid layout"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Add routing configuration for the PowerPoint to PDF page in frontend/src/App.tsx, creating a new route at /tools/powerpoint-to-pdf that lazy-loads PowerPointToPdfPage, following the same pattern as other tool routes",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "lets add powerpoint to pdf!"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Route /tools/powerpoint-to-pdf is registered in the router configuration",
+        "Route lazy-loads the PowerPointToPdfPage component",
+        "Route follows the same authentication and layout patterns as other tool pages"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Add internationalization keys for PowerPoint to PDF feature in frontend/src/i18n/translations.ts, including page titles, upload instructions, button labels, and error messages in both English and Spanish, following the naming pattern used for other conversion tools",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "lets add powerpoint to pdf!"
+        ]
+      },
+      "acceptanceCriteria": [
+        "English translations added for all PowerPoint to PDF UI text",
+        "Spanish translations added for all PowerPoint to PDF UI text",
+        "Translation keys follow the established naming convention (e.g., tools.powerPointToPdf.*)",
+        "All user-facing text in PowerPointToPdfPage uses i18n hooks"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Add a PowerPoint to PDF link to the homepage tool grid at frontend/src/pages/HomePage.tsx, positioned logically among other conversion tools with appropriate icon and description",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "lets add powerpoint to pdf!"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Link card appears on the homepage tool grid",
+        "Card includes PowerPoint-related icon",
+        "Card description clearly indicates PowerPoint to PDF conversion",
+        "Card navigates to /tools/powerpoint-to-pdf when clicked"
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (read-only).",
-    "Do not edit immutable hook bootstrap files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx."
+    "Do not modify immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui/*",
+    "Follow the single-actor backend architecture pattern without creating additional actors",
+    "Use only frontend-based conversion; do not add backend PowerPoint processing logic",
+    "Maintain consistency with existing conversion page patterns (Word, Excel, Image to PDF)",
+    "Use the same AdSense placement strategy as other conversion pages"
   ],
   "nonGoals": [
-    "No changes to PDF tool functionality, file upload behavior, or backend canister logic.",
-    "No new authentication providers or external integrations."
+    "Backend PowerPoint file storage or processing",
+    "Server-side PowerPoint conversion logic in Motoko",
+    "Advanced PowerPoint features like animations, transitions, or embedded media",
+    "PowerPoint editing or creation capabilities",
+    "Batch PowerPoint conversion (multiple files at once)",
+    "PowerPoint preview or thumbnail generation"
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

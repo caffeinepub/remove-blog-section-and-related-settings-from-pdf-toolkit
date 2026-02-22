@@ -152,3 +152,33 @@ export function useUpdateAdSenseConfig() {
     },
   });
 }
+
+// Traffic Counter Queries
+export function useGetTrafficCounter() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<bigint>({
+    queryKey: ['trafficCounter'],
+    queryFn: async () => {
+      if (!actor) return BigInt(0);
+      return actor.getTrafficCounter();
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+}
+
+export function useIncrementTrafficCounter() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.incrementAndGetTrafficCounter();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trafficCounter'] });
+    },
+  });
+}

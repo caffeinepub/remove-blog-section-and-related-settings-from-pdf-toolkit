@@ -25,10 +25,21 @@ export const UserRole = IDL.Variant({
   'guest' : IDL.Null,
 });
 export const AdSenseConfig = IDL.Record({
+  'headerAdUnitId' : IDL.Text,
+  'enableInContentAds' : IDL.Bool,
   'enableFooterBanner' : IDL.Bool,
-  'enableToolSectionAds' : IDL.Bool,
   'publisherId' : IDL.Text,
+  'sidebarAdUnitId' : IDL.Text,
+  'enableSidebarAds' : IDL.Bool,
+  'footerAdUnitId' : IDL.Text,
+  'inContentAdUnitId' : IDL.Text,
   'enableHeaderBanner' : IDL.Bool,
+});
+export const AdRevenueMetrics = IDL.Record({
+  'clicks' : IDL.Nat,
+  'revenue' : IDL.Float64,
+  'date' : IDL.Text,
+  'impressions' : IDL.Nat,
 });
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
 export const Time = IDL.Int;
@@ -71,16 +82,35 @@ export const idlService = IDL.Service({
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'deleteFile' : IDL.Func([IDL.Text], [], []),
   'getAdSenseConfig' : IDL.Func([], [AdSenseConfig], ['query']),
+  'getAggregateRevenue' : IDL.Func(
+      [IDL.Text, IDL.Text],
+      [AdRevenueMetrics],
+      ['query'],
+    ),
+  'getAllRevenueMetrics' : IDL.Func([], [IDL.Vec(AdRevenueMetrics)], ['query']),
   'getCallerFiles' : IDL.Func([], [IDL.Vec(FileMetadata)], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getFileMetadata' : IDL.Func([IDL.Text], [FileMetadata], ['query']),
+  'getRevenueByRange' : IDL.Func(
+      [IDL.Text, IDL.Text],
+      [IDL.Vec(AdRevenueMetrics)],
+      ['query'],
+    ),
+  'getRevenueMetrics' : IDL.Func([IDL.Text], [AdRevenueMetrics], ['query']),
+  'getTrafficCounter' : IDL.Func([], [IDL.Nat], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
       ['query'],
     ),
+  'incrementAndGetTrafficCounter' : IDL.Func([], [IDL.Nat], []),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'recordAdMetrics' : IDL.Func(
+      [IDL.Text, IDL.Nat, IDL.Nat, IDL.Float64],
+      [],
+      [],
+    ),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'updateAdSenseConfig' : IDL.Func([AdSenseConfig], [], []),
   'uploadFile' : IDL.Func([IDL.Text, ExternalBlob], [], []),
@@ -106,10 +136,21 @@ export const idlFactory = ({ IDL }) => {
     'guest' : IDL.Null,
   });
   const AdSenseConfig = IDL.Record({
+    'headerAdUnitId' : IDL.Text,
+    'enableInContentAds' : IDL.Bool,
     'enableFooterBanner' : IDL.Bool,
-    'enableToolSectionAds' : IDL.Bool,
     'publisherId' : IDL.Text,
+    'sidebarAdUnitId' : IDL.Text,
+    'enableSidebarAds' : IDL.Bool,
+    'footerAdUnitId' : IDL.Text,
+    'inContentAdUnitId' : IDL.Text,
     'enableHeaderBanner' : IDL.Bool,
+  });
+  const AdRevenueMetrics = IDL.Record({
+    'clicks' : IDL.Nat,
+    'revenue' : IDL.Float64,
+    'date' : IDL.Text,
+    'impressions' : IDL.Nat,
   });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
   const Time = IDL.Int;
@@ -152,16 +193,39 @@ export const idlFactory = ({ IDL }) => {
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'deleteFile' : IDL.Func([IDL.Text], [], []),
     'getAdSenseConfig' : IDL.Func([], [AdSenseConfig], ['query']),
+    'getAggregateRevenue' : IDL.Func(
+        [IDL.Text, IDL.Text],
+        [AdRevenueMetrics],
+        ['query'],
+      ),
+    'getAllRevenueMetrics' : IDL.Func(
+        [],
+        [IDL.Vec(AdRevenueMetrics)],
+        ['query'],
+      ),
     'getCallerFiles' : IDL.Func([], [IDL.Vec(FileMetadata)], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getFileMetadata' : IDL.Func([IDL.Text], [FileMetadata], ['query']),
+    'getRevenueByRange' : IDL.Func(
+        [IDL.Text, IDL.Text],
+        [IDL.Vec(AdRevenueMetrics)],
+        ['query'],
+      ),
+    'getRevenueMetrics' : IDL.Func([IDL.Text], [AdRevenueMetrics], ['query']),
+    'getTrafficCounter' : IDL.Func([], [IDL.Nat], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],
         ['query'],
       ),
+    'incrementAndGetTrafficCounter' : IDL.Func([], [IDL.Nat], []),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'recordAdMetrics' : IDL.Func(
+        [IDL.Text, IDL.Nat, IDL.Nat, IDL.Float64],
+        [],
+        [],
+      ),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'updateAdSenseConfig' : IDL.Func([AdSenseConfig], [], []),
     'uploadFile' : IDL.Func([IDL.Text, ExternalBlob], [], []),

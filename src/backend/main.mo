@@ -20,6 +20,20 @@ actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
+  // Persistent traffic counter for total page views
+  var trafficCounter : Nat = 0;
+
+  // Increment and get traffic counter (accessible to everyone including guests)
+  public func incrementAndGetTrafficCounter() : async Nat {
+    trafficCounter += 1;
+    trafficCounter;
+  };
+
+  // Get current traffic counter value (accessible to everyone)
+  public query func getTrafficCounter() : async Nat {
+    trafficCounter;
+  };
+
   // User Profile Type
   public type UserProfile = {
     name : Text;
@@ -39,24 +53,50 @@ actor {
     };
   };
 
-  // Updated AdSense Configuration Type (no blog setting)
+  // Updated AdSense Configuration Type (with separate ad unit IDs)
   public type AdSenseConfig = {
     publisherId : Text;
+    headerAdUnitId : Text;
+    sidebarAdUnitId : Text;
+    footerAdUnitId : Text;
+    inContentAdUnitId : Text;
     enableHeaderBanner : Bool;
-    enableToolSectionAds : Bool;
+    enableSidebarAds : Bool;
     enableFooterBanner : Bool;
+    enableInContentAds : Bool;
   };
 
-  // Default AdSense Config (no blog setting)
+  // Ad Revenue Metrics (new type for tracking)
+  public type AdRevenueMetrics = {
+    date : Text;
+    impressions : Nat;
+    clicks : Nat;
+    revenue : Float;
+  };
+
+  // AdSense Analytics Record (to store daily metrics)
+  type AdSenseAnalytics = {
+    impressions : Nat;
+    clicks : Nat;
+    revenue : Float;
+  };
+
+  // Default AdSense Config (with separate ad unit IDs)
   var adSenseConfig : AdSenseConfig = {
     publisherId = "";
+    headerAdUnitId = "";
+    sidebarAdUnitId = "";
+    footerAdUnitId = "";
+    inContentAdUnitId = "";
     enableHeaderBanner = true;
-    enableToolSectionAds = true;
+    enableSidebarAds = true;
     enableFooterBanner = true;
+    enableInContentAds = true;
   };
 
   let userProfiles = Map.empty<Principal, UserProfile>();
   let fileMetadatas = Map.empty<Principal, List.List<FileMetadata>>();
+  let adRevenueMetrics = Map.empty<Text, AdSenseAnalytics>();
 
   // User Profile Functions
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
@@ -142,7 +182,8 @@ actor {
     };
   };
 
-  // Monetization/AdSense Functions - Admin only (no blog setting)
+  // Monetization/AdSense Functions
+  // Admin only - update configuration
   public shared ({ caller }) func updateAdSenseConfig(newConfig : AdSenseConfig) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can update AdSense config");
@@ -150,10 +191,110 @@ actor {
     adSenseConfig := newConfig;
   };
 
-  public query ({ caller }) func getAdSenseConfig() : async AdSenseConfig {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
-      Runtime.trap("Unauthorized: Only admins can access AdSense config");
-    };
+  // Public - anyone can read ad configuration to display ads
+  public query func getAdSenseConfig() : async AdSenseConfig {
     adSenseConfig;
+  };
+
+  // New Ad Revenue Tracking Functions (Admin only)
+  public shared ({ caller }) func recordAdMetrics(date : Text, impressions : Nat, clicks : Nat, revenue : Float) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can record ad metrics");
+    };
+    let analytics : AdSenseAnalytics = {
+      impressions;
+      clicks;
+      revenue;
+    };
+    adRevenueMetrics.add(date, analytics);
+  };
+
+  public query ({ caller }) func getRevenueMetrics(date : Text) : async AdRevenueMetrics {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can access revenue metrics");
+    };
+    switch (adRevenueMetrics.get(date)) {
+      case (null) {
+        {
+          date;
+          impressions = 0;
+          clicks = 0;
+          revenue = 0.0;
+        };
+      };
+      case (?metrics) {
+        {
+          date;
+          impressions = metrics.impressions;
+          clicks = metrics.clicks;
+          revenue = metrics.revenue;
+        };
+      };
+    };
+  };
+
+  public query ({ caller }) func getAllRevenueMetrics() : async [AdRevenueMetrics] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can access revenue metrics");
+    };
+    let metricsList = List.empty<AdRevenueMetrics>();
+
+    for ((date, metrics) in adRevenueMetrics.entries()) {
+      let revenueMetrics : AdRevenueMetrics = {
+        date;
+        impressions = metrics.impressions;
+        clicks = metrics.clicks;
+        revenue = metrics.revenue;
+      };
+      metricsList.add(revenueMetrics);
+    };
+
+    metricsList.reverse().toArray();
+  };
+
+  public query ({ caller }) func getRevenueByRange(startDate : Text, endDate : Text) : async [AdRevenueMetrics] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can access revenue metrics");
+    };
+    let metricsList = List.empty<AdRevenueMetrics>();
+
+    for ((date, metrics) in adRevenueMetrics.entries()) {
+      if (date >= startDate and date <= endDate) {
+        let revenueMetrics : AdRevenueMetrics = {
+          date;
+          impressions = metrics.impressions;
+          clicks = metrics.clicks;
+          revenue = metrics.revenue;
+        };
+        metricsList.add(revenueMetrics);
+      };
+    };
+
+    metricsList.reverse().toArray();
+  };
+
+  // Aggregate revenue for a date range
+  public query ({ caller }) func getAggregateRevenue(startDate : Text, endDate : Text) : async AdRevenueMetrics {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can access revenue metrics");
+    };
+    var totalImpressions = 0;
+    var totalClicks = 0;
+    var totalRevenue = 0.0;
+
+    for ((date, metrics) in adRevenueMetrics.entries()) {
+      if (date >= startDate and date <= endDate) {
+        totalImpressions += metrics.impressions;
+        totalClicks += metrics.clicks;
+        totalRevenue += metrics.revenue;
+      };
+    };
+
+    {
+      date = startDate # " - " # endDate;
+      impressions = totalImpressions;
+      clicks = totalClicks;
+      revenue = totalRevenue;
+    };
   };
 };

@@ -96,13 +96,24 @@ export interface FileMetadata {
     fileName: string;
     uploadTime: Time;
 }
+export interface AdRevenueMetrics {
+    clicks: bigint;
+    revenue: number;
+    date: string;
+    impressions: bigint;
+}
 export interface _CaffeineStorageRefillInformation {
     proposed_top_up_amount?: bigint;
 }
 export interface AdSenseConfig {
+    headerAdUnitId: string;
+    enableInContentAds: boolean;
     enableFooterBanner: boolean;
-    enableToolSectionAds: boolean;
     publisherId: string;
+    sidebarAdUnitId: string;
+    enableSidebarAds: boolean;
+    footerAdUnitId: string;
+    inContentAdUnitId: string;
     enableHeaderBanner: boolean;
 }
 export interface _CaffeineStorageCreateCertificateResult {
@@ -132,12 +143,19 @@ export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     deleteFile(fileId: string): Promise<void>;
     getAdSenseConfig(): Promise<AdSenseConfig>;
+    getAggregateRevenue(startDate: string, endDate: string): Promise<AdRevenueMetrics>;
+    getAllRevenueMetrics(): Promise<Array<AdRevenueMetrics>>;
     getCallerFiles(): Promise<Array<FileMetadata>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getFileMetadata(fileId: string): Promise<FileMetadata>;
+    getRevenueByRange(startDate: string, endDate: string): Promise<Array<AdRevenueMetrics>>;
+    getRevenueMetrics(date: string): Promise<AdRevenueMetrics>;
+    getTrafficCounter(): Promise<bigint>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
+    incrementAndGetTrafficCounter(): Promise<bigint>;
     isCallerAdmin(): Promise<boolean>;
+    recordAdMetrics(date: string, impressions: bigint, clicks: bigint, revenue: number): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     updateAdSenseConfig(newConfig: AdSenseConfig): Promise<void>;
     uploadFile(fileName: string, blob: ExternalBlob): Promise<void>;
@@ -285,6 +303,34 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getAggregateRevenue(arg0: string, arg1: string): Promise<AdRevenueMetrics> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAggregateRevenue(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAggregateRevenue(arg0, arg1);
+            return result;
+        }
+    }
+    async getAllRevenueMetrics(): Promise<Array<AdRevenueMetrics>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getAllRevenueMetrics();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getAllRevenueMetrics();
+            return result;
+        }
+    }
     async getCallerFiles(): Promise<Array<FileMetadata>> {
         if (this.processError) {
             try {
@@ -341,6 +387,48 @@ export class Backend implements backendInterface {
             return from_candid_FileMetadata_n11(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getRevenueByRange(arg0: string, arg1: string): Promise<Array<AdRevenueMetrics>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getRevenueByRange(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getRevenueByRange(arg0, arg1);
+            return result;
+        }
+    }
+    async getRevenueMetrics(arg0: string): Promise<AdRevenueMetrics> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getRevenueMetrics(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getRevenueMetrics(arg0);
+            return result;
+        }
+    }
+    async getTrafficCounter(): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getTrafficCounter();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getTrafficCounter();
+            return result;
+        }
+    }
     async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
         if (this.processError) {
             try {
@@ -355,6 +443,20 @@ export class Backend implements backendInterface {
             return from_candid_opt_n14(this._uploadFile, this._downloadFile, result);
         }
     }
+    async incrementAndGetTrafficCounter(): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.incrementAndGetTrafficCounter();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.incrementAndGetTrafficCounter();
+            return result;
+        }
+    }
     async isCallerAdmin(): Promise<boolean> {
         if (this.processError) {
             try {
@@ -366,6 +468,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.isCallerAdmin();
+            return result;
+        }
+    }
+    async recordAdMetrics(arg0: string, arg1: bigint, arg2: bigint, arg3: number): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.recordAdMetrics(arg0, arg1, arg2, arg3);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.recordAdMetrics(arg0, arg1, arg2, arg3);
             return result;
         }
     }

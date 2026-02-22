@@ -13,6 +13,7 @@ import { DollarSign, Info, Save, Shield, Eye, Settings, CheckCircle2, Layout } f
 import { useNavigate } from '@tanstack/react-router';
 import { cn } from '@/lib/utils';
 import { useI18n } from '../i18n/useI18n';
+import { AdSenseConfig } from '../backend';
 
 export default function MonetizationSettingsPage() {
   const { data: isAdmin, isLoading: adminLoading } = useIsCallerAdmin();
@@ -22,28 +23,50 @@ export default function MonetizationSettingsPage() {
   const { t } = useI18n();
 
   const [publisherId, setPublisherId] = useState('');
+  const [headerAdUnitId, setHeaderAdUnitId] = useState('');
+  const [sidebarAdUnitId, setSidebarAdUnitId] = useState('');
+  const [footerAdUnitId, setFooterAdUnitId] = useState('');
+  const [inContentAdUnitId, setInContentAdUnitId] = useState('');
   const [enableHeaderBanner, setEnableHeaderBanner] = useState(true);
-  const [enableToolSectionAds, setEnableToolSectionAds] = useState(true);
+  const [enableSidebarAds, setEnableSidebarAds] = useState(true);
   const [enableFooterBanner, setEnableFooterBanner] = useState(true);
-  const [hasUnsavedPublisherId, setHasUnsavedPublisherId] = useState(false);
+  const [enableInContentAds, setEnableInContentAds] = useState(true);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [validationError, setValidationError] = useState('');
 
   useEffect(() => {
     if (config) {
       setPublisherId(config.publisherId);
+      setHeaderAdUnitId(config.headerAdUnitId);
+      setSidebarAdUnitId(config.sidebarAdUnitId);
+      setFooterAdUnitId(config.footerAdUnitId);
+      setInContentAdUnitId(config.inContentAdUnitId);
       setEnableHeaderBanner(config.enableHeaderBanner);
-      setEnableToolSectionAds(config.enableToolSectionAds);
+      setEnableSidebarAds(config.enableSidebarAds);
       setEnableFooterBanner(config.enableFooterBanner);
-      setHasUnsavedPublisherId(false);
+      setEnableInContentAds(config.enableInContentAds);
+      setHasUnsavedChanges(false);
     }
   }, [config]);
 
+  const validatePublisherId = (id: string): boolean => {
+    if (!id) return true; // Empty is valid (not configured yet)
+    const pattern = /^ca-pub-\d{16}$/;
+    return pattern.test(id);
+  };
+
   // Auto-save when toggles change
-  const handleToggleChange = async (field: string, value: boolean) => {
-    const newConfig = {
+  const handleToggleChange = async (field: keyof AdSenseConfig, value: boolean) => {
+    const newConfig: AdSenseConfig = {
       publisherId,
+      headerAdUnitId,
+      sidebarAdUnitId,
+      footerAdUnitId,
+      inContentAdUnitId,
       enableHeaderBanner,
-      enableToolSectionAds,
+      enableSidebarAds,
       enableFooterBanner,
+      enableInContentAds,
       [field]: value,
     };
 
@@ -52,11 +75,14 @@ export default function MonetizationSettingsPage() {
       case 'enableHeaderBanner':
         setEnableHeaderBanner(value);
         break;
-      case 'enableToolSectionAds':
-        setEnableToolSectionAds(value);
+      case 'enableSidebarAds':
+        setEnableSidebarAds(value);
         break;
       case 'enableFooterBanner':
         setEnableFooterBanner(value);
+        break;
+      case 'enableInContentAds':
+        setEnableInContentAds(value);
         break;
     }
 
@@ -64,14 +90,35 @@ export default function MonetizationSettingsPage() {
     await updateConfig.mutateAsync(newConfig);
   };
 
-  const handleSavePublisherId = async () => {
-    await updateConfig.mutateAsync({
+  const handleSaveConfig = async () => {
+    // Validate publisher ID format
+    if (publisherId && !validatePublisherId(publisherId)) {
+      setValidationError(t('monetization.adSenseValidationError'));
+      return;
+    }
+
+    setValidationError('');
+
+    const newConfig: AdSenseConfig = {
       publisherId,
+      headerAdUnitId,
+      sidebarAdUnitId,
+      footerAdUnitId,
+      inContentAdUnitId,
       enableHeaderBanner,
-      enableToolSectionAds,
+      enableSidebarAds,
       enableFooterBanner,
-    });
-    setHasUnsavedPublisherId(false);
+      enableInContentAds,
+    };
+
+    await updateConfig.mutateAsync(newConfig);
+    setHasUnsavedChanges(false);
+  };
+
+  const handleFieldChange = (setter: (value: string) => void, value: string) => {
+    setter(value);
+    setHasUnsavedChanges(true);
+    setValidationError('');
   };
 
   if (adminLoading || configLoading) {
@@ -123,19 +170,17 @@ export default function MonetizationSettingsPage() {
           <TabsList className="grid w-full max-w-md grid-cols-2">
             <TabsTrigger value="configuration" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
-              <span className="hidden sm:inline">{t('monetization.tabs.configuration')}</span>
-              <span className="sm:hidden">{t('monetization.tabs.configuration')}</span>
+              <span>{t('monetization.tabs.configuration')}</span>
             </TabsTrigger>
             <TabsTrigger value="preview" className="flex items-center gap-2">
               <Eye className="h-4 w-4" />
-              <span className="hidden sm:inline">{t('monetization.tabs.preview')}</span>
-              <span className="sm:hidden">{t('monetization.tabs.preview')}</span>
+              <span>{t('monetization.tabs.preview')}</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Configuration Tab */}
           <TabsContent value="configuration" className="space-y-6">
-            {/* Publisher ID Card */}
+            {/* AdSense Configuration Card */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -148,22 +193,68 @@ export default function MonetizationSettingsPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="publisherId">{t('monetization.config.publisherId')}</Label>
+                  <Label htmlFor="publisherId">{t('monetization.publisherIdLabel')}</Label>
                   <Input
                     id="publisherId"
                     value={publisherId}
-                    onChange={(e) => {
-                      setPublisherId(e.target.value);
-                      setHasUnsavedPublisherId(true);
-                    }}
-                    placeholder={t('monetization.config.publisherIdPlaceholder')}
+                    onChange={(e) => handleFieldChange(setPublisherId, e.target.value)}
+                    placeholder={t('monetization.publisherIdPlaceholder')}
                   />
                   <p className="text-xs text-muted-foreground">
-                    {t('monetization.config.publisherIdHelp')}
+                    {t('monetization.publisherIdHelp')}
                   </p>
                 </div>
 
-                {hasUnsavedPublisherId && (
+                <Separator />
+
+                <div className="space-y-2">
+                  <Label htmlFor="headerAdUnitId">{t('monetization.headerAdUnitLabel')}</Label>
+                  <Input
+                    id="headerAdUnitId"
+                    value={headerAdUnitId}
+                    onChange={(e) => handleFieldChange(setHeaderAdUnitId, e.target.value)}
+                    placeholder="1234567890"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sidebarAdUnitId">{t('monetization.sidebarAdUnitLabel')}</Label>
+                  <Input
+                    id="sidebarAdUnitId"
+                    value={sidebarAdUnitId}
+                    onChange={(e) => handleFieldChange(setSidebarAdUnitId, e.target.value)}
+                    placeholder="1234567890"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="footerAdUnitId">{t('monetization.footerAdUnitLabel')}</Label>
+                  <Input
+                    id="footerAdUnitId"
+                    value={footerAdUnitId}
+                    onChange={(e) => handleFieldChange(setFooterAdUnitId, e.target.value)}
+                    placeholder="1234567890"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="inContentAdUnitId">{t('monetization.inContentAdUnitLabel')}</Label>
+                  <Input
+                    id="inContentAdUnitId"
+                    value={inContentAdUnitId}
+                    onChange={(e) => handleFieldChange(setInContentAdUnitId, e.target.value)}
+                    placeholder="1234567890"
+                  />
+                </div>
+
+                {validationError && (
+                  <Alert variant="destructive">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription>{validationError}</AlertDescription>
+                  </Alert>
+                )}
+
+                {hasUnsavedChanges && (
                   <Alert>
                     <Info className="h-4 w-4" />
                     <AlertDescription>
@@ -173,8 +264,8 @@ export default function MonetizationSettingsPage() {
                 )}
 
                 <Button
-                  onClick={handleSavePublisherId}
-                  disabled={updateConfig.isPending || !hasUnsavedPublisherId}
+                  onClick={handleSaveConfig}
+                  disabled={updateConfig.isPending || !hasUnsavedChanges}
                   className="w-full sm:w-auto"
                 >
                   {updateConfig.isPending ? (
@@ -189,6 +280,13 @@ export default function MonetizationSettingsPage() {
                     </>
                   )}
                 </Button>
+
+                {updateConfig.isSuccess && !hasUnsavedChanges && (
+                  <Alert>
+                    <CheckCircle2 className="h-4 w-4" />
+                    <AlertTitle>{t('monetization.adSenseUpdateSuccess')}</AlertTitle>
+                  </Alert>
+                )}
               </CardContent>
             </Card>
 
@@ -228,23 +326,23 @@ export default function MonetizationSettingsPage() {
 
                 <Separator />
 
-                {/* Tool Section Ads */}
+                {/* Sidebar Ads */}
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5 flex-1">
                     <Label className="text-base font-medium">
-                      {t('monetization.placements.toolSection')}
+                      {t('monetization.placements.sidebarAds')}
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      {t('monetization.placements.toolSectionDesc')}
+                      {t('monetization.placements.sidebarAdsDesc')}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge variant={enableToolSectionAds ? 'default' : 'secondary'}>
-                      {enableToolSectionAds ? t('monetization.placements.enabled') : t('monetization.placements.disabled')}
+                    <Badge variant={enableSidebarAds ? 'default' : 'secondary'}>
+                      {enableSidebarAds ? t('monetization.placements.enabled') : t('monetization.placements.disabled')}
                     </Badge>
                     <Switch
-                      checked={enableToolSectionAds}
-                      onCheckedChange={(checked) => handleToggleChange('enableToolSectionAds', checked)}
+                      checked={enableSidebarAds}
+                      onCheckedChange={(checked) => handleToggleChange('enableSidebarAds', checked)}
                       disabled={updateConfig.isPending}
                     />
                   </div>
@@ -269,6 +367,30 @@ export default function MonetizationSettingsPage() {
                     <Switch
                       checked={enableFooterBanner}
                       onCheckedChange={(checked) => handleToggleChange('enableFooterBanner', checked)}
+                      disabled={updateConfig.isPending}
+                    />
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* In-Content Ads */}
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5 flex-1">
+                    <Label className="text-base font-medium">
+                      In-Content Ads
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Show ads within content sections
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant={enableInContentAds ? 'default' : 'secondary'}>
+                      {enableInContentAds ? t('monetization.placements.enabled') : t('monetization.placements.disabled')}
+                    </Badge>
+                    <Switch
+                      checked={enableInContentAds}
+                      onCheckedChange={(checked) => handleToggleChange('enableInContentAds', checked)}
                       disabled={updateConfig.isPending}
                     />
                   </div>
@@ -318,12 +440,12 @@ export default function MonetizationSettingsPage() {
                   </div>
                 </div>
 
-                {/* Tool Section Ad Preview */}
-                <div className={cn('space-y-2', !enableToolSectionAds && 'opacity-50')}>
-                  <Label className="text-sm font-medium">{t('monetization.preview.toolSection')}</Label>
+                {/* Sidebar Ad Preview */}
+                <div className={cn('space-y-2', !enableSidebarAds && 'opacity-50')}>
+                  <Label className="text-sm font-medium">Sidebar Ad</Label>
                   <div className="border-2 border-dashed rounded-lg p-6 bg-muted/30 text-center">
                     <p className="text-sm text-muted-foreground">
-                      {enableToolSectionAds ? t('monetization.placements.enabled') : t('monetization.placements.disabled')}
+                      {enableSidebarAds ? t('monetization.placements.enabled') : t('monetization.placements.disabled')}
                     </p>
                   </div>
                 </div>

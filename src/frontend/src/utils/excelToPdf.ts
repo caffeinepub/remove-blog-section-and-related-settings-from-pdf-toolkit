@@ -1,107 +1,100 @@
-import { getCurrentLanguage } from '../i18n/storage';
-import { translations } from '../i18n/translations';
-
 export async function convertExcelToPdf(
   fileBuffer: ArrayBuffer,
   fileName: string,
-  selectedSheets?: string[],
+  selectedSheets: string[],
   orientation: 'portrait' | 'landscape' = 'landscape'
 ): Promise<Blob> {
-  // Get current language for error messages
-  const lang = getCurrentLanguage() as 'en' | 'es';
-  const t = (key: keyof typeof translations.en) => translations[lang][key] || translations.en[key];
-
   if (typeof window.XLSX === 'undefined') {
-    throw new Error(t('excelToPdf.error.libraryNotLoaded'));
+    throw new Error('XLSX library not loaded. Please refresh the page.');
   }
 
-  if (typeof window.jspdf?.jsPDF === 'undefined') {
-    throw new Error(t('excelToPdf.error.libraryNotLoaded'));
+  if (typeof window.jsPDF === 'undefined') {
+    throw new Error('jsPDF library not loaded. Please refresh the page.');
   }
 
-  try {
-    // Parse the Excel file
-    const workbook = window.XLSX.read(fileBuffer, { type: 'array' });
+  const workbook = window.XLSX.read(fileBuffer, { type: 'array' });
 
-    if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
-      throw new Error(t('excelToPdf.error.emptyFile'));
+  if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+    throw new Error('No worksheets found in the Excel file');
+  }
+
+  if (selectedSheets.length === 0) {
+    throw new Error('Please select at least one worksheet');
+  }
+
+  // Validate selected sheets exist
+  for (const sheetName of selectedSheets) {
+    if (!workbook.SheetNames.includes(sheetName)) {
+      throw new Error(`Worksheet "${sheetName}" not found`);
+    }
+  }
+
+  const pdf = new window.jsPDF({
+    orientation,
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  let isFirstSheet = true;
+
+  for (const sheetName of selectedSheets) {
+    if (!isFirstSheet) {
+      pdf.addPage();
+    }
+    isFirstSheet = false;
+
+    const worksheet = workbook.Sheets[sheetName];
+    const htmlString = window.XLSX.utils.sheet_to_html(worksheet);
+
+    // Create a temporary div to parse the HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlString;
+    const table = tempDiv.querySelector('table');
+
+    if (!table) {
+      continue;
     }
 
-    // Determine which sheets to convert
-    const sheetsToConvert = selectedSheets && selectedSheets.length > 0
-      ? selectedSheets.filter(name => workbook.SheetNames.includes(name))
-      : workbook.SheetNames;
+    // Add sheet name as title
+    pdf.setFontSize(14);
+    pdf.text(sheetName, 10, 10);
 
-    if (sheetsToConvert.length === 0) {
-      throw new Error(t('excelToPdf.error.noSheets'));
-    }
+    // Convert table to PDF using autoTable if available, otherwise simple text
+    const rows: string[][] = [];
+    const tableRows = table.querySelectorAll('tr');
 
-    // Create PDF with specified orientation
-    const pdf = new window.jspdf.jsPDF({
-      orientation,
-      unit: 'mm',
-      format: 'a4',
+    tableRows.forEach((tr) => {
+      const row: string[] = [];
+      const cells = tr.querySelectorAll('td, th');
+      cells.forEach((cell) => {
+        row.push(cell.textContent || '');
+      });
+      if (row.length > 0) {
+        rows.push(row);
+      }
     });
 
-    let isFirstSheet = true;
+    // Simple text rendering
+    let yPos = 20;
+    const lineHeight = 5;
+    const maxWidth = orientation === 'portrait' ? 190 : 277;
 
-    for (const sheetName of sheetsToConvert) {
-      const worksheet = workbook.Sheets[sheetName];
-
-      if (!worksheet) continue;
-
-      // Convert worksheet to array of arrays
-      const data = window.XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
-
-      // Filter out completely empty rows
-      const filteredData = data.filter(row =>
-        row.some(cell => cell !== null && cell !== undefined && cell !== '')
-      );
-
-      if (filteredData.length === 0) {
-        // Skip empty worksheets
-        continue;
-      }
-
-      // Add new page for each sheet (except the first one)
-      if (!isFirstSheet) {
+    rows.forEach((row, rowIndex) => {
+      if (yPos > (orientation === 'portrait' ? 280 : 190)) {
         pdf.addPage();
+        yPos = 10;
       }
-      isFirstSheet = false;
 
-      // Add sheet name as title
-      pdf.setFontSize(16);
-      pdf.text(sheetName, 14, 15);
+      pdf.setFontSize(8);
+      const rowText = row.join(' | ');
+      const lines = pdf.splitTextToSize(rowText, maxWidth);
 
-      // Add table using autoTable
-      (pdf as any).autoTable({
-        head: filteredData.length > 0 ? [filteredData[0]] : [],
-        body: filteredData.slice(1),
-        startY: 25,
-        styles: {
-          fontSize: 8,
-          cellPadding: 2,
-        },
-        headStyles: {
-          fillColor: [66, 139, 202],
-          textColor: 255,
-          fontStyle: 'bold',
-        },
-        margin: { top: 25, right: 14, bottom: 14, left: 14 },
-        theme: 'grid',
+      lines.forEach((line: string) => {
+        pdf.text(line, 10, yPos);
+        yPos += lineHeight;
       });
-    }
-
-    // Check if any sheets were actually converted
-    if (isFirstSheet) {
-      throw new Error(t('excelToPdf.error.emptyWorksheet'));
-    }
-
-    // Generate PDF blob
-    const pdfBlob = pdf.output('blob');
-    return pdfBlob;
-  } catch (error: any) {
-    console.error('Excel to PDF conversion error:', error);
-    throw error;
+    });
   }
+
+  return pdf.output('blob');
 }

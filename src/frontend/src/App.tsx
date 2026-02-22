@@ -1,6 +1,7 @@
 import { useInternetIdentity } from './hooks/useInternetIdentity';
 import { useGetCallerUserProfile } from './hooks/useQueries';
 import { useActor } from './hooks/useActor';
+import { useTrafficCounter } from './hooks/useTrafficCounter';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
 import { I18nProvider } from './i18n/I18nProvider';
@@ -8,6 +9,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import MyFilesPage from './pages/MyFilesPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import MonetizationSettingsPage from './pages/MonetizationSettingsPage';
 import ExcelToPdfPage from './pages/ExcelToPdfPage';
 import ImageToPdfPage from './pages/ImageToPdfPage';
@@ -17,12 +19,16 @@ import SplitPdfPage from './pages/SplitPdfPage';
 import ProtectPdfPage from './pages/ProtectPdfPage';
 import RotatePdfPage from './pages/RotatePdfPage';
 import WordToPdfPage from './pages/WordToPdfPage';
+import PowerPointToPdfPage from './pages/PowerPointToPdfPage';
 import ConvertIntoPdfPage from './pages/ConvertIntoPdfPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProfileSetupDialog from './components/ProfileSetupDialog';
 import { createRouter, RouterProvider, createRoute, createRootRoute, Outlet } from '@tanstack/react-router';
 
 function Layout() {
+  // Initialize traffic counter at the layout level
+  useTrafficCounter();
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -43,6 +49,12 @@ const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: HomePage,
+});
+
+const analyticsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/analytics',
+  component: AnalyticsPage,
 });
 
 const myFilesRoute = createRoute({
@@ -105,6 +117,12 @@ const wordToPdfRoute = createRoute({
   component: WordToPdfPage,
 });
 
+const powerPointToPdfRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/tools/powerpoint-to-pdf',
+  component: PowerPointToPdfPage,
+});
+
 const convertIntoPdfRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/tools/convert-into-pdf',
@@ -113,6 +131,7 @@ const convertIntoPdfRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
+  analyticsRoute,
   myFilesRoute,
   monetizationSettingsRoute,
   excelToPdfRoute,
@@ -123,6 +142,7 @@ const routeTree = rootRoute.addChildren([
   protectPdfRoute,
   rotatePdfRoute,
   wordToPdfRoute,
+  powerPointToPdfRoute,
   convertIntoPdfRoute,
 ]);
 

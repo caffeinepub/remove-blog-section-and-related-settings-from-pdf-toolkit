@@ -1,231 +1,130 @@
-/**
- * Client-side Image-to-PDF conversion utility using jsPDF
- * Converts multiple images to a single PDF document with customizable layout options
- */
-
-export interface ImageToPdfOptions {
-  orientation?: 'portrait' | 'landscape';
-  pageSize?: 'A4' | 'Letter';
-  marginMm?: number;
-  fitMode?: 'contain' | 'cover';
-  alignment?: 'top-left' | 'top-center' | 'top-right' | 'center-left' | 'center' | 'center-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+export interface LayoutOptions {
+  pageSize: 'A4' | 'Letter';
+  orientation: 'portrait' | 'landscape';
+  margins: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+  fitMode: 'contain' | 'cover';
+  alignment: {
+    horizontal: 'left' | 'center' | 'right';
+    vertical: 'top' | 'middle' | 'bottom';
+  };
 }
 
-/**
- * Convert multiple images to a single PDF with customizable layout
- * Each image is placed on its own page with specified layout options
- */
 export async function convertImagesToPdf(
-  images: File[],
-  options: ImageToPdfOptions = {}
+  imageFiles: File[],
+  options: LayoutOptions
 ): Promise<Blob> {
-  if (!images || images.length === 0) {
-    throw new Error('No images provided for conversion');
+  if (typeof window === 'undefined' || !window.jsPDF) {
+    throw new Error('jsPDF library not loaded. Please refresh the page.');
   }
 
-  // Check if jsPDF is loaded
-  if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
-    throw new Error('PDF library not loaded. Please refresh the page and try again.');
-  }
+  const { jsPDF } = window.jsPDF;
 
-  const { jsPDF } = window.jspdf;
+  // Page dimensions in mm
+  const pageSizes = {
+    A4: { width: 210, height: 297 },
+    Letter: { width: 216, height: 279 },
+  };
 
-  // Default options
-  const orientation = options.orientation || 'portrait';
-  const pageSize = options.pageSize || 'A4';
-  const marginMm = options.marginMm !== undefined ? options.marginMm : 10;
-  const fitMode = options.fitMode || 'contain';
-  const alignment = options.alignment || 'center';
+  const pageSize = pageSizes[options.pageSize];
+  const { width: pageWidth, height: pageHeight } =
+    options.orientation === 'portrait'
+      ? pageSize
+      : { width: pageSize.height, height: pageSize.width };
 
-  // Validate margins
-  if (marginMm < 0) {
-    throw new Error('INVALID_MARGIN_NEGATIVE');
-  }
-
-  // Page dimensions in mm based on size and orientation
-  let pageWidth: number;
-  let pageHeight: number;
-
-  if (pageSize === 'A4') {
-    pageWidth = orientation === 'portrait' ? 210 : 297;
-    pageHeight = orientation === 'portrait' ? 297 : 210;
-  } else { // Letter
-    pageWidth = orientation === 'portrait' ? 215.9 : 279.4;
-    pageHeight = orientation === 'portrait' ? 279.4 : 215.9;
-  }
-
-  // Validate margins don't exceed page dimensions
-  if (marginMm * 2 >= pageWidth || marginMm * 2 >= pageHeight) {
-    throw new Error('INVALID_MARGIN_TOO_LARGE');
-  }
-
-  const maxWidth = pageWidth - 2 * marginMm;
-  const maxHeight = pageHeight - 2 * marginMm;
-
-  // Create new PDF document
+  // Create PDF
   const pdf = new jsPDF({
-    orientation,
+    orientation: options.orientation,
     unit: 'mm',
-    format: pageSize.toLowerCase() as 'a4' | 'letter',
+    format: options.pageSize.toLowerCase(),
   });
 
-  let isFirstPage = true;
+  // Calculate content area
+  const contentWidth = pageWidth - options.margins.left - options.margins.right;
+  const contentHeight = pageHeight - options.margins.top - options.margins.bottom;
 
-  for (const imageFile of images) {
-    try {
-      // Validate image type
-      if (!imageFile.type.startsWith('image/')) {
-        throw new Error(`Invalid file type: ${imageFile.name}. Only image files are supported.`);
-      }
-
-      // Load image
-      const imageData = await loadImage(imageFile);
-
-      // Add new page for subsequent images
-      if (!isFirstPage) {
-        pdf.addPage();
-      }
-      isFirstPage = false;
-
-      // Calculate scaled dimensions based on fit mode
-      const imgWidth = imageData.width;
-      const imgHeight = imageData.height;
-      const aspectRatio = imgWidth / imgHeight;
-
-      let scaledWidth: number;
-      let scaledHeight: number;
-
-      if (fitMode === 'contain') {
-        // Fit entire image within bounds, preserving aspect ratio
-        scaledWidth = maxWidth;
-        scaledHeight = maxWidth / aspectRatio;
-
-        if (scaledHeight > maxHeight) {
-          scaledHeight = maxHeight;
-          scaledWidth = maxHeight * aspectRatio;
-        }
-      } else {
-        // Cover: fill entire area, may crop image
-        scaledWidth = maxWidth;
-        scaledHeight = maxWidth / aspectRatio;
-
-        if (scaledHeight < maxHeight) {
-          scaledHeight = maxHeight;
-          scaledWidth = maxHeight * aspectRatio;
-        }
-      }
-
-      // Calculate position based on alignment
-      let x: number;
-      let y: number;
-
-      // Horizontal alignment
-      if (alignment.includes('left')) {
-        x = marginMm;
-      } else if (alignment.includes('right')) {
-        x = pageWidth - marginMm - scaledWidth;
-      } else {
-        // center (default)
-        x = (pageWidth - scaledWidth) / 2;
-      }
-
-      // Vertical alignment
-      if (alignment.includes('top')) {
-        y = marginMm;
-      } else if (alignment.includes('bottom')) {
-        y = pageHeight - marginMm - scaledHeight;
-      } else {
-        // center (default)
-        y = (pageHeight - scaledHeight) / 2;
-      }
-
-      // For cover mode, we may need to clip the image
-      if (fitMode === 'cover') {
-        // Ensure image doesn't exceed drawable area
-        const clipX = Math.max(marginMm, x);
-        const clipY = Math.max(marginMm, y);
-        const clipWidth = Math.min(scaledWidth, maxWidth);
-        const clipHeight = Math.min(scaledHeight, maxHeight);
-
-        // Add image with clipping
-        pdf.addImage(
-          imageData.dataUrl,
-          imageData.format,
-          clipX,
-          clipY,
-          clipWidth,
-          clipHeight,
-          undefined,
-          'FAST'
-        );
-      } else {
-        // Add image normally for contain mode
-        pdf.addImage(imageData.dataUrl, imageData.format, x, y, scaledWidth, scaledHeight);
-      }
-    } catch (error: any) {
-      console.error(`Error processing image ${imageFile.name}:`, error);
-      throw new Error(`Failed to process image "${imageFile.name}": ${error.message}`);
+  for (let i = 0; i < imageFiles.length; i++) {
+    if (i > 0) {
+      pdf.addPage();
     }
+
+    const imageFile = imageFiles[i];
+    const imageData = await readFileAsDataURL(imageFile);
+
+    // Get image dimensions
+    const imgDimensions = await getImageDimensions(imageData);
+    const imgAspect = imgDimensions.width / imgDimensions.height;
+    const contentAspect = contentWidth / contentHeight;
+
+    let imgWidth: number;
+    let imgHeight: number;
+
+    if (options.fitMode === 'contain') {
+      // Fit image within content area
+      if (imgAspect > contentAspect) {
+        imgWidth = contentWidth;
+        imgHeight = contentWidth / imgAspect;
+      } else {
+        imgHeight = contentHeight;
+        imgWidth = contentHeight * imgAspect;
+      }
+    } else {
+      // Cover content area
+      if (imgAspect > contentAspect) {
+        imgHeight = contentHeight;
+        imgWidth = contentHeight * imgAspect;
+      } else {
+        imgWidth = contentWidth;
+        imgHeight = contentWidth / imgAspect;
+      }
+    }
+
+    // Calculate position based on alignment
+    let x = options.margins.left;
+    let y = options.margins.top;
+
+    switch (options.alignment.horizontal) {
+      case 'center':
+        x += (contentWidth - imgWidth) / 2;
+        break;
+      case 'right':
+        x += contentWidth - imgWidth;
+        break;
+    }
+
+    switch (options.alignment.vertical) {
+      case 'middle':
+        y += (contentHeight - imgHeight) / 2;
+        break;
+      case 'bottom':
+        y += contentHeight - imgHeight;
+        break;
+    }
+
+    pdf.addImage(imageData, 'JPEG', x, y, imgWidth, imgHeight);
   }
 
-  // Generate PDF blob
-  const pdfBlob = pdf.output('blob');
-  return pdfBlob;
+  return pdf.output('blob');
 }
 
-interface ImageData {
-  dataUrl: string;
-  width: number;
-  height: number;
-  format: string;
-}
-
-/**
- * Load an image file and return its data URL and dimensions
- */
-function loadImage(file: File): Promise<ImageData> {
+function readFileAsDataURL(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-
-    reader.onload = (e) => {
-      const dataUrl = e.target?.result as string;
-      if (!dataUrl) {
-        reject(new Error('Failed to read image file'));
-        return;
-      }
-
-      const img = new Image();
-
-      img.onload = () => {
-        // Determine image format from MIME type
-        let format = 'JPEG';
-        if (file.type === 'image/png') {
-          format = 'PNG';
-        } else if (file.type === 'image/gif') {
-          format = 'GIF';
-        } else if (file.type === 'image/webp') {
-          format = 'WEBP';
-        }
-
-        resolve({
-          dataUrl,
-          width: img.width,
-          height: img.height,
-          format,
-        });
-      };
-
-      img.onerror = () => {
-        reject(new Error('Failed to load image'));
-      };
-
-      img.src = dataUrl;
-    };
-
-    reader.onerror = () => {
-      reject(new Error('Failed to read file'));
-    };
-
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
     reader.readAsDataURL(file);
+  });
+}
+
+function getImageDimensions(dataURL: string): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve({ width: img.width, height: img.height });
+    img.onerror = reject;
+    img.src = dataURL;
   });
 }

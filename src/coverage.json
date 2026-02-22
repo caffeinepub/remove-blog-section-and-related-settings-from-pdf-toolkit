@@ -1,33 +1,62 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-17T10:57:41.015Z",
+  "generatedAt": "2026-02-22T08:51:19.198Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 6,
+    "implemented": 5,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Update the app’s user-visible name/branding everywhere it appears in the frontend from “PDF Toolkit” to “PDF Vaulty”, including: document/page title, header brand text, logo alt text, and any home-page hero copy that currently says “PDF Toolkit”.",
+        "summary": "Add a new PowerPointToPdfPage component at frontend/src/pages/PowerPointToPdfPage.tsx that allows users to upload PowerPoint files (.ppt, .pptx) and convert them to PDF format with drag-and-drop file upload support, following the same UI patterns as ExcelToPdfPage and WordToPdfPage",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/index.html",
-          "frontend/src/components/Header.tsx",
-          "frontend/src/components/Footer.tsx"
+          "frontend/src/pages/PowerPointToPdfPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/index.html",
-          "frontend/src/components/Header.tsx",
-          "frontend/src/components/Footer.tsx"
+          "frontend/src/pages/PowerPointToPdfPage.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Update i18n translation strings so any English UI copy that currently contains the old app name “PDF Toolkit” is updated to “PDF Vaulty” while preserving existing translation key structure.",
+        "summary": "Create a utility function frontend/src/utils/powerPointToPdf.ts that converts PowerPoint files to PDF format, following the same structure and error handling patterns as excelToPdf.ts and wordToPdf.ts, with progress callback support",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/utils/powerPointToPdf.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/utils/powerPointToPdf.ts"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Add a PowerPoint to PDF card to the ConvertIntoPdfPage grid at frontend/src/pages/ConvertIntoPdfPage.tsx that links to the new PowerPoint conversion page, positioned after the Excel to PDF card and following the same styling pattern",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/ConvertIntoPdfPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/ConvertIntoPdfPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Add routing configuration for the PowerPoint to PDF page in frontend/src/App.tsx, creating a new route at /tools/powerpoint-to-pdf that lazy-loads PowerPointToPdfPage, following the same pattern as other tool routes",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Add internationalization keys for PowerPoint to PDF feature in frontend/src/i18n/translations.ts, including page titles, upload instructions, button labels, and error messages in both English and Spanish, following the naming pattern used for other conversion tools",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/i18n/translations.ts"
@@ -35,6 +64,15 @@
         "matchedFiles": [
           "frontend/src/i18n/translations.ts"
         ]
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Add a PowerPoint to PDF link to the homepage tool grid at frontend/src/pages/HomePage.tsx, positioned logically among other conversion tools with appropriate icon and description",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/pages/HomePage.tsx"
+        ],
+        "matchedFiles": []
       }
     ]
   },
@@ -43,11 +81,11 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/index.html",
-    "frontend/src/components/Footer.tsx",
-    "frontend/src/components/Header.tsx",
-    "frontend/src/components/LanguageSelector.tsx",
+    "frontend/src/App.tsx",
     "frontend/src/i18n/translations.ts",
+    "frontend/src/pages/ConvertIntoPdfPage.tsx",
+    "frontend/src/pages/PowerPointToPdfPage.tsx",
+    "frontend/src/utils/powerPointToPdf.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

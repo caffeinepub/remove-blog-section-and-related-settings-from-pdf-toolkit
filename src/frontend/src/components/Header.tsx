@@ -3,11 +3,12 @@ import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useGetCallerUserProfile, useIsCallerAdmin } from '../hooks/useQueries';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Menu, Home, Upload, DollarSign } from 'lucide-react';
+import { Menu, Home, Upload, DollarSign, BarChart3 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
 import ThemeToggle from './ThemeToggle';
 import LanguageSelector from './LanguageSelector';
+import TrafficCounter from './TrafficCounter';
 import { useI18n } from '../i18n/useI18n';
 
 export default function Header() {
@@ -55,6 +56,10 @@ export default function Header() {
           {mobile && <Home className="h-5 w-5" />}
           {t('nav.home')}
         </Link>
+        <Link to="/analytics" className={linkClass} onClick={handleClick}>
+          {mobile && <BarChart3 className="h-5 w-5" />}
+          {t('nav.analytics')}
+        </Link>
         {isAuthenticated && (
           <Link to="/my-files" className={linkClass} onClick={handleClick}>
             {mobile && <Upload className="h-5 w-5" />}
@@ -91,6 +96,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-3">
+          <TrafficCounter />
           {isAuthenticated && userProfile && (
             <span className="hidden sm:inline text-sm text-muted-foreground">
               {userProfile.name}

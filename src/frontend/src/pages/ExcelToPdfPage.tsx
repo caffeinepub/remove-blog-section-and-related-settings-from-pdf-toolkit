@@ -12,6 +12,8 @@ import { convertExcelToPdf } from '../utils/excelToPdf';
 import { toast } from 'sonner';
 import DragAndDropFileZone from '../components/DragAndDropFileZone';
 import { useI18n } from '../i18n/useI18n';
+import AdSenseHeader from '../components/AdSenseHeader';
+import AdSenseSidebar from '../components/AdSenseSidebar';
 
 export default function ExcelToPdfPage() {
   const { identity } = useInternetIdentity();
@@ -190,210 +192,179 @@ export default function ExcelToPdfPage() {
 
   return (
     <div className="container px-4 py-12">
-      <div className="max-w-3xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-            <FileSpreadsheet className="h-8 w-8 text-primary" />
-            {t('excelToPdf.title')}
-          </h1>
-          <p className="text-muted-foreground">
-            {t('excelToPdf.subtitle')}
-          </p>
-        </div>
+      <AdSenseHeader />
+      
+      <div className="max-w-6xl mx-auto">
+        <div className="lg:grid lg:grid-cols-[1fr_300px] lg:gap-6">
+          <div>
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
+                <FileSpreadsheet className="h-8 w-8 text-primary" />
+                {t('excelToPdf.title')}
+              </h1>
+              <p className="text-muted-foreground">
+                {t('excelToPdf.subtitle')}
+              </p>
+            </div>
 
-        {/* Main Conversion Card */}
-        <DragAndDropFileZone onFileDrop={handleFileDrop} accept=".xlsx,.xls" disabled={isConverting}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Upload className="h-5 w-5" />
-                {t('excelToPdf.upload.title')}
-              </CardTitle>
-              <CardDescription>
-                {t('excelToPdf.upload.description')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* File Input */}
-              <div className="space-y-4">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".xlsx,.xls"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                  id="excel-file-upload"
-                  disabled={isConverting}
-                />
-                <label htmlFor="excel-file-upload">
-                  <Button asChild disabled={isConverting} size="lg" className="w-full sm:w-auto">
-                    <span className="cursor-pointer">
-                      <Upload className="mr-2 h-4 w-4" />
-                      {isConverting ? t('excelToPdf.upload.converting') : t('excelToPdf.upload.button')}
-                    </span>
-                  </Button>
-                </label>
-              </div>
-
-              {/* Error Display */}
-              {error && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-
-              {/* File Loaded - Show Worksheet Selection and Orientation */}
-              {fileBuffer && availableSheets.length > 0 && !convertedPdfBlob && (
-                <div className="space-y-4 p-4 border rounded-lg bg-muted/30">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-lg">{t('excelToPdf.fileLoaded')}</h3>
-                      <p className="text-sm text-muted-foreground">{originalFileName}</p>
-                    </div>
-                    <CheckCircle2 className="h-6 w-6 text-green-600" />
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-base font-semibold">
-                        {t('excelToPdf.selectWorksheets')} ({selectedSheets.size} {t('common.of')} {availableSheets.length})
-                      </Label>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={handleSelectAll}
-                          disabled={isConverting}
-                        >
-                          {t('excelToPdf.selectAll')}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={handleSelectNone}
-                          disabled={isConverting}
-                        >
-                          {t('excelToPdf.selectNone')}
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2 max-h-60 overflow-y-auto border rounded p-3 bg-background">
-                      {availableSheets.map((sheetName) => (
-                        <div key={sheetName} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`sheet-${sheetName}`}
-                            checked={selectedSheets.has(sheetName)}
-                            onCheckedChange={() => handleSheetToggle(sheetName)}
-                            disabled={isConverting}
-                          />
-                          <Label
-                            htmlFor={`sheet-${sheetName}`}
-                            className="text-sm font-normal cursor-pointer flex-1"
-                          >
-                            {sheetName}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Page Orientation Selector */}
-                  <div className="space-y-3 pt-2 border-t">
-                    <Label className="text-base font-semibold">
-                      {t('excelToPdf.pageOrientation')}
-                    </Label>
-                    <RadioGroup
-                      value={orientation}
-                      onValueChange={(value) => setOrientation(value as 'portrait' | 'landscape')}
+            {/* Main Conversion Card */}
+            <DragAndDropFileZone onFileDrop={handleFileDrop} accept=".xlsx,.xls" disabled={isConverting}>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Upload className="h-5 w-5" />
+                    {t('excelToPdf.upload.title')}
+                  </CardTitle>
+                  <CardDescription>
+                    {t('excelToPdf.upload.description')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* File Input */}
+                  <div className="space-y-4">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".xlsx,.xls"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                      id="excel-file-upload"
                       disabled={isConverting}
-                      className="flex gap-4"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="portrait" id="orientation-portrait" />
-                        <Label htmlFor="orientation-portrait" className="cursor-pointer font-normal">
-                          {t('excelToPdf.portrait')}
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="landscape" id="orientation-landscape" />
-                        <Label htmlFor="orientation-landscape" className="cursor-pointer font-normal">
-                          {t('excelToPdf.landscape')}
-                        </Label>
-                      </div>
-                    </RadioGroup>
+                    />
+                    <label htmlFor="excel-file-upload">
+                      <Button asChild disabled={isConverting} size="lg" className="w-full sm:w-auto">
+                        <span className="cursor-pointer">
+                          <Upload className="mr-2 h-4 w-4" />
+                          {isConverting ? t('excelToPdf.upload.converting') : t('excelToPdf.upload.button')}
+                        </span>
+                      </Button>
+                    </label>
                   </div>
 
-                  <Button
-                    onClick={handleConvert}
-                    disabled={isConverting || selectedSheets.size === 0}
-                    size="lg"
-                    className="w-full"
-                  >
-                    {isConverting ? (
-                      <>
-                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        {t('excelToPdf.converting')}
-                      </>
-                    ) : (
-                      <>
-                        <FileSpreadsheet className="mr-2 h-4 w-4" />
-                        {t('excelToPdf.convertButton')}
-                      </>
-                    )}
-                  </Button>
-                </div>
-              )}
+                  {/* Error Display */}
+                  {error && (
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
 
-              {/* Conversion Progress */}
-              {isConverting && (
-                <div className="space-y-2">
-                  <Progress value={undefined} className="w-full" />
-                  <p className="text-sm text-muted-foreground text-center">
-                    {t('excelToPdf.convertingProgress')}
-                  </p>
-                </div>
-              )}
+                  {/* File Loaded - Show Worksheet Selection and Orientation */}
+                  {fileBuffer && availableSheets.length > 0 && !convertedPdfBlob && (
+                    <div className="space-y-4 p-4 border rounded-lg bg-muted/30">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-lg">{t('excelToPdf.fileLoaded')}</h3>
+                          <p className="text-sm text-muted-foreground">{originalFileName}</p>
+                        </div>
+                        <CheckCircle2 className="h-6 w-6 text-green-600" />
+                      </div>
 
-              {/* Success - Download PDF */}
-              {convertedPdfBlob && (
-                <div className="space-y-4 p-4 border rounded-lg bg-green-50 dark:bg-green-950/20">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-green-600" />
-                    <div>
-                      <h3 className="font-semibold text-lg">{t('excelToPdf.success')}</h3>
-                      <p className="text-sm text-muted-foreground">{convertedFileName}</p>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-base font-medium">{t('excelToPdf.selectSheets')}</Label>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" onClick={handleSelectAll} disabled={isConverting}>
+                              {t('excelToPdf.selectAll')}
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={handleSelectNone} disabled={isConverting}>
+                              {t('excelToPdf.selectNone')}
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {availableSheets.map((sheetName) => (
+                            <div key={sheetName} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`sheet-${sheetName}`}
+                                checked={selectedSheets.has(sheetName)}
+                                onCheckedChange={() => handleSheetToggle(sheetName)}
+                                disabled={isConverting}
+                              />
+                              <Label
+                                htmlFor={`sheet-${sheetName}`}
+                                className="text-sm font-normal cursor-pointer"
+                              >
+                                {sheetName}
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <Label className="text-base font-medium">{t('excelToPdf.orientation.label')}</Label>
+                        <RadioGroup value={orientation} onValueChange={(value) => setOrientation(value as 'portrait' | 'landscape')} disabled={isConverting}>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="portrait" id="portrait" />
+                            <Label htmlFor="portrait" className="font-normal cursor-pointer">
+                              {t('excelToPdf.orientation.portrait')}
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="landscape" id="landscape" />
+                            <Label htmlFor="landscape" className="font-normal cursor-pointer">
+                              {t('excelToPdf.orientation.landscape')}
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+
+                      <Button
+                        onClick={handleConvert}
+                        disabled={isConverting || selectedSheets.size === 0}
+                        className="w-full"
+                        size="lg"
+                      >
+                        {isConverting ? (
+                          <>
+                            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                            {t('excelToPdf.convert.converting')}
+                          </>
+                        ) : (
+                          <>
+                            <FileSpreadsheet className="mr-2 h-4 w-4" />
+                            {t('excelToPdf.convert.button')}
+                          </>
+                        )}
+                      </Button>
                     </div>
-                  </div>
+                  )}
 
-                  <div className="flex gap-2">
-                    <Button onClick={handleDownload} size="lg" className="flex-1">
-                      <Download className="mr-2 h-4 w-4" />
-                      {t('excelToPdf.download')}
-                    </Button>
-                    <Button onClick={handleReset} variant="outline" size="lg">
-                      {t('excelToPdf.convertAnother')}
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </DragAndDropFileZone>
+                  {/* Conversion Success */}
+                  {convertedPdfBlob && (
+                    <div className="space-y-4 p-4 border rounded-lg bg-green-50 dark:bg-green-900/20">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-6 w-6 text-green-600" />
+                        <div>
+                          <h3 className="font-semibold text-lg text-green-900 dark:text-green-100">
+                            {t('excelToPdf.success.title')}
+                          </h3>
+                          <p className="text-sm text-green-700 dark:text-green-300">
+                            {t('excelToPdf.success.description')}
+                          </p>
+                        </div>
+                      </div>
 
-        {/* Info Card */}
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="text-base">{t('excelToPdf.howItWorks')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p>{t('excelToPdf.step1')}</p>
-            <p>{t('excelToPdf.step2')}</p>
-            <p>{t('excelToPdf.step3')}</p>
-            <p>{t('excelToPdf.step4')}</p>
-          </CardContent>
-        </Card>
+                      <div className="flex gap-2">
+                        <Button onClick={handleDownload} className="flex-1" size="lg">
+                          <Download className="mr-2 h-4 w-4" />
+                          {t('excelToPdf.success.download')}
+                        </Button>
+                        <Button onClick={handleReset} variant="outline" className="flex-1" size="lg">
+                          {t('excelToPdf.success.convertAnother')}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </DragAndDropFileZone>
+          </div>
+
+          <AdSenseSidebar />
+        </div>
       </div>
     </div>
   );
