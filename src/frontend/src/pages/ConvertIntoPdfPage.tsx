@@ -1,6 +1,6 @@
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, FileSpreadsheet, Image, Presentation } from 'lucide-react';
+import { FileText, FileSpreadsheet, Image } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useI18n } from '../i18n/useI18n';
 import AdSenseHeader from '../components/AdSenseHeader';
@@ -59,19 +59,6 @@ export default function ConvertIntoPdfPage() {
                     </div>
                     <CardTitle>{t('convertIntoPdf.excelToPdf.title')}</CardTitle>
                     <CardDescription>{t('convertIntoPdf.excelToPdf.description')}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-
-              {/* PowerPoint to PDF */}
-              <Link to="/tools/powerpoint-to-pdf">
-                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
-                  <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-3">
-                      <Presentation className="h-6 w-6 text-orange-600 dark:text-orange-400" />
-                    </div>
-                    <CardTitle>{t('convertIntoPdf.powerPointToPdf.title')}</CardTitle>
-                    <CardDescription>{t('convertIntoPdf.powerPointToPdf.description')}</CardDescription>
                   </CardHeader>
                 </Card>
               </Link>

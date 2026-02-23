@@ -1,14 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Add PowerPoint to PDF conversion feature to PDF Vaulty.
+**Goal:** Restore PDF Vaulty to Version 29, the last stable deployment before PowerPoint conversion feature caused failures.
 
 **Planned changes:**
-- Create PowerPointToPdfPage component with drag-and-drop upload for .ppt and .pptx files
-- Implement powerPointToPdf.ts utility function for client-side PowerPoint to PDF conversion
-- Add PowerPoint to PDF card to ConvertIntoPdfPage grid
-- Register /tools/powerpoint-to-pdf route in App.tsx
-- Add English and Spanish translations for PowerPoint to PDF feature
-- Add PowerPoint to PDF link to homepage tool grid
+- Remove PowerPoint to PDF conversion feature (component, utility function, and routes)
+- Remove PowerPoint option from the Convert Into PDF tools page
+- Restore application to Version 29 state with all other PDF tools intact (merge, split, compress, rotate, protect, Word/Excel/Image to PDF)
+- Ensure successful deployment to Internet Computer with proper canister resolution
 
-**User-visible outcome:** Users can convert PowerPoint presentations to PDF format through a new dedicated page, accessible from the homepage and the "Convert into PDF" section.
+**User-visible outcome:** Users can access a stable, working PDF Vaulty application at pdfvaulty-url.caffeine.xyz with all core PDF tools (except PowerPoint conversion) functioning properly without deployment errors.

@@ -2,10 +2,13 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-new-powerpointtopdfpage-component-at-frontend-src-pages-powerpointtopdfpage-tsx-that-allows-users-to-upload-powerpoint-files-ppt-pptx-and-convert-them-to-pdf-format-with-drag-and-drop-file-upload-support-following-the-same-ui-patterns-as-exceltopdfpage-and-wordtopdfpage",
-      "featureTitle": "Add a new PowerPointToPdfPage component at frontend/src/pages/PowerPointToPdfPage.tsx that allows users to upload PowerPoint files (.ppt, .pptx) and convert them to PDF format with drag-and-drop file upload support, following the same UI patterns as ExcelToPdfPage and WordToPdfPage",
+      "featureId": "feature-restore-the-application-to-version-29-state-which-was-the-last-stable-deployment-before-version-30-and-31-failed-this-version-should-include-all-core-pdf-tools-merge-split-compress-rotate-protect-word-to-pdf-excel-to-pdf-image-to-pdf-but-exclude-the-powerpoint-to-pdf-feature-that-caused-deployment-issues",
+      "featureTitle": "Restore the application to Version 29 state, which was the last stable deployment before Version 30 and 31 failed. This version should include all core PDF tools (merge, split, compress, rotate, protect, Word to PDF, Excel to PDF, Image to PDF) but exclude the PowerPoint to PDF feature that caused deployment issues.",
       "files": [
-        "frontend/src/pages/PowerPointToPdfPage.tsx"
+        "frontend/src/App.tsx",
+        "frontend/src/pages/ConvertIntoPdfPage.tsx",
+        "frontend/src/pages/PowerPointToPdfPage.tsx",
+        "frontend/src/utils/powerPointToPdf.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -22,9 +25,12 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-create-a-utility-function-frontend-src-utils-powerpointtopdf-ts-that-converts-powerpoint-files-to-pdf-format-following-the-same-structure-and-error-handling-patterns-as-exceltopdf-ts-and-wordtopdf-ts-with-progress-callback-support",
-      "featureTitle": "Create a utility function frontend/src/utils/powerPointToPdf.ts that converts PowerPoint files to PDF format, following the same structure and error handling patterns as excelToPdf.ts and wordToPdf.ts, with progress callback support",
+      "featureId": "feature-remove-all-powerpoint-to-pdf-conversion-functionality-from-the-codebase-including-the-powerpointtopdfpage-component-powerpointtopdf-utility-function-and-related-routes-since-this-feature-caused-the-deployment-failures-in-versions-30-and-31",
+      "featureTitle": "Remove all PowerPoint to PDF conversion functionality from the codebase, including the PowerPointToPdfPage component, powerPointToPdf utility function, and related routes, since this feature caused the deployment failures in versions 30 and 31.",
       "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/pages/ConvertIntoPdfPage.tsx",
+        "frontend/src/pages/PowerPointToPdfPage.tsx",
         "frontend/src/utils/powerPointToPdf.ts"
       ],
       "components": [
@@ -38,66 +44,6 @@
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-powerpoint-to-pdf-card-to-the-convertintopdfpage-grid-at-frontend-src-pages-convertintopdfpage-tsx-that-links-to-the-new-powerpoint-conversion-page-positioned-after-the-excel-to-pdf-card-and-following-the-same-styling-pattern",
-      "featureTitle": "Add a PowerPoint to PDF card to the ConvertIntoPdfPage grid at frontend/src/pages/ConvertIntoPdfPage.tsx that links to the new PowerPoint conversion page, positioned after the Excel to PDF card and following the same styling pattern",
-      "files": [
-        "frontend/src/pages/ConvertIntoPdfPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-routing-configuration-for-the-powerpoint-to-pdf-page-in-frontend-src-app-tsx-creating-a-new-route-at-tools-powerpoint-to-pdf-that-lazy-loads-powerpointtopdfpage-following-the-same-pattern-as-other-tool-routes",
-      "featureTitle": "Add routing configuration for the PowerPoint to PDF page in frontend/src/App.tsx, creating a new route at /tools/powerpoint-to-pdf that lazy-loads PowerPointToPdfPage, following the same pattern as other tool routes",
-      "files": [
-        "frontend/src/App.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-internationalization-keys-for-powerpoint-to-pdf-feature-in-frontend-src-i18n-translations-ts-including-page-titles-upload-instructions-button-labels-and-error-messages-in-both-english-and-spanish-following-the-naming-pattern-used-for-other-conversion-tools",
-      "featureTitle": "Add internationalization keys for PowerPoint to PDF feature in frontend/src/i18n/translations.ts, including page titles, upload instructions, button labels, and error messages in both English and Spanish, following the naming pattern used for other conversion tools",
-      "files": [
-        "frontend/src/i18n/translations.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
       ],
       "confidence": "high"
     }

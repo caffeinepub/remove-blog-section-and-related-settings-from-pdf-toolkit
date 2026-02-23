@@ -1,5 +1,5 @@
 {
-  "frontend/src/App.tsx": "Main application component with ThemeProvider, I18nProvider, TanStack Router setup including the new Convert into PDF hub route, and profile setup dialog that only appears after Internet Identity initialization is complete, user is authenticated, actor is ready, and profile query has completed with null result.",
+  "frontend/src/App.tsx": "Main application component with ThemeProvider, I18nProvider, TanStack Router setup with all PDF tool routes except PowerPoint to PDF, and profile setup dialog that only appears after Internet Identity initialization is complete, user is authenticated, actor is ready, and profile query has completed with null result.",
   "frontend/src/hooks/useQueries.ts": "React Query hooks with localized toast messages for all backend operations including error handling for profile save failures using non-React translation helper.",
   "frontend/src/components/Header.tsx": "Responsive header with updated brand text \"PDF Vaulty\" and logo alt text, localized navigation, authentication controls, language selector, and theme toggle in both desktop and mobile Sheet menu.",
   "frontend/src/components/Footer.tsx": "Footer with three ad spaces, localized attribution text with dynamic year and UTM-tracked caffeine.ai link, and updated appIdentifier fallback value \"pdf-vaulty\".",
@@ -38,7 +38,7 @@
   "frontend/src/utils/protectPdf.ts": "Client-side PDF protection utility supporting add/remove password modes using jsPDF for encryption and pdf-lib for decryption, with corrected window.jsPDF references and proper Blob type handling without unknown casting.",
   "frontend/src/utils/rotatePdf.ts": "Client-side PDF rotation utility using pdf-lib with corrected setRotation API and proper Uint8Array to ArrayBuffer casting via unknown intermediate type.",
   "frontend/src/pages/RotatePdfPage.tsx": "Authenticated Rotate PDF page with single-file upload (picker + drag-and-drop), rotation angle selection (90/180/270), progress UI, automatic download on completion, and fully localized strings.",
-  "frontend/src/pages/ConvertIntoPdfPage.tsx": "Hub page for PDF conversion tools displaying navigation cards to Word-to-PDF, Excel-to-PDF, PowerPoint-to-PDF, and Image-to-PDF converters with authentication gate and localized content using the Presentation icon for PowerPoint.",
+  "frontend/src/pages/ConvertIntoPdfPage.tsx": "Hub page for PDF conversion tools displaying navigation cards to Word-to-PDF, Excel-to-PDF, and Image-to-PDF converters (PowerPoint removed) with authentication gate and localized content.",
   "frontend/src/utils/wordToPdf.ts": "Word to PDF conversion utility stub that validates Word files and throws an error indicating the feature requires server-side processing and is not yet implemented, removing all mammoth.js references.",
   "frontend/src/pages/PowerPointToPdfPage.tsx": "PowerPoint to PDF converter page with authentication gate, file upload (picker + drag-and-drop), conversion progress UI, automatic download on completion, and fully localized strings using the Presentation icon from lucide-react."
 }

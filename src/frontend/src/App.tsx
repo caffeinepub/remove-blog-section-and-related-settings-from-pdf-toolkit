@@ -19,7 +19,6 @@ import SplitPdfPage from './pages/SplitPdfPage';
 import ProtectPdfPage from './pages/ProtectPdfPage';
 import RotatePdfPage from './pages/RotatePdfPage';
 import WordToPdfPage from './pages/WordToPdfPage';
-import PowerPointToPdfPage from './pages/PowerPointToPdfPage';
 import ConvertIntoPdfPage from './pages/ConvertIntoPdfPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProfileSetupDialog from './components/ProfileSetupDialog';
@@ -117,12 +116,6 @@ const wordToPdfRoute = createRoute({
   component: WordToPdfPage,
 });
 
-const powerPointToPdfRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/tools/powerpoint-to-pdf',
-  component: PowerPointToPdfPage,
-});
-
 const convertIntoPdfRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/tools/convert-into-pdf',
@@ -142,7 +135,6 @@ const routeTree = rootRoute.addChildren([
   protectPdfRoute,
   rotatePdfRoute,
   wordToPdfRoute,
-  powerPointToPdfRoute,
   convertIntoPdfRoute,
 ]);
 

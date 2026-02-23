@@ -1,88 +1,70 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-22T08:51:19.198Z",
+  "generatedAt": "2026-02-23T03:43:14.714Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 5,
+    "total": 3,
+    "implemented": 2,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Add a new PowerPointToPdfPage component at frontend/src/pages/PowerPointToPdfPage.tsx that allows users to upload PowerPoint files (.ppt, .pptx) and convert them to PDF format with drag-and-drop file upload support, following the same UI patterns as ExcelToPdfPage and WordToPdfPage",
+        "summary": "Restore the application to Version 29 state, which was the last stable deployment before Version 30 and 31 failed. This version should include all core PDF tools (merge, split, compress, rotate, protect, Word to PDF, Excel to PDF, Image to PDF) but exclude the PowerPoint to PDF feature that caused deployment issues.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/PowerPointToPdfPage.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/pages/ConvertIntoPdfPage.tsx",
+          "frontend/src/pages/PowerPointToPdfPage.tsx",
+          "frontend/src/utils/powerPointToPdf.ts"
         ],
         "matchedFiles": [
-          "frontend/src/pages/PowerPointToPdfPage.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/pages/ConvertIntoPdfPage.tsx",
+          "frontend/src/pages/PowerPointToPdfPage.tsx",
+          "frontend/src/utils/powerPointToPdf.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Create a utility function frontend/src/utils/powerPointToPdf.ts that converts PowerPoint files to PDF format, following the same structure and error handling patterns as excelToPdf.ts and wordToPdf.ts, with progress callback support",
+        "summary": "Remove all PowerPoint to PDF conversion functionality from the codebase, including the PowerPointToPdfPage component, powerPointToPdf utility function, and related routes, since this feature caused the deployment failures in versions 30 and 31.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/utils/powerPointToPdf.ts"
+          "frontend/src/pages/PowerPointToPdfPage.tsx",
+          "frontend/src/utils/powerPointToPdf.ts",
+          "frontend/src/pages/ConvertIntoPdfPage.tsx",
+          "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/utils/powerPointToPdf.ts"
+          "frontend/src/pages/PowerPointToPdfPage.tsx",
+          "frontend/src/utils/powerPointToPdf.ts",
+          "frontend/src/pages/ConvertIntoPdfPage.tsx",
+          "frontend/src/App.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Add a PowerPoint to PDF card to the ConvertIntoPdfPage grid at frontend/src/pages/ConvertIntoPdfPage.tsx that links to the new PowerPoint conversion page, positioned after the Excel to PDF card and following the same styling pattern",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/ConvertIntoPdfPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/ConvertIntoPdfPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-4",
-        "summary": "Add routing configuration for the PowerPoint to PDF page in frontend/src/App.tsx, creating a new route at /tools/powerpoint-to-pdf that lazy-loads PowerPointToPdfPage, following the same pattern as other tool routes",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Add internationalization keys for PowerPoint to PDF feature in frontend/src/i18n/translations.ts, including page titles, upload instructions, button labels, and error messages in both English and Spanish, following the naming pattern used for other conversion tools",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/i18n/translations.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/i18n/translations.ts"
-        ]
-      },
-      {
-        "id": "REQ-6",
-        "summary": "Add a PowerPoint to PDF link to the homepage tool grid at frontend/src/pages/HomePage.tsx, positioned logically among other conversion tools with appropriate icon and description",
+        "summary": "Ensure the deployed application is accessible at the pdfvaulty-url.caffeine.xyz domain shown in the user's screenshots, with proper canister deployment that resolves without errors.",
         "status": "missing",
         "plannedFiles": [
-          "frontend/src/pages/HomePage.tsx"
+          "frontend/src/pages/HomePage.tsx",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/hooks/useActor.ts",
+          "frontend/src/main.tsx"
         ],
         "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/App.tsx",
-    "frontend/src/i18n/translations.ts",
     "frontend/src/pages/ConvertIntoPdfPage.tsx",
     "frontend/src/pages/PowerPointToPdfPage.tsx",
     "frontend/src/utils/powerPointToPdf.ts",

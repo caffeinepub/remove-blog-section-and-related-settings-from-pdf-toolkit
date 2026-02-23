@@ -1,71 +1,44 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "PDF conversion web application with Word, Excel, and image-to-PDF features; adding PowerPoint to PDF conversion",
+  "summary": "PDF Vaulty - A web-based PDF tool suite for merging, compressing, converting, and protecting PDF files. The application has experienced deployment issues with versions 30 and 31 (which added PowerPoint to PDF conversion), and the user has requested to relaunch version 29 to restore a working state.",
   "architectural_notes": [
-    "Deployed on Internet Computer (IC) at canister ID 5e6c2-5iaaa-aaaal-qnfna-cai",
-    "Google Search Console verified with meta tag",
-    "Previous build attempts (Version 30) encountered deployment issues"
+    "Application deployed on Internet Computer blockchain via Caffeine platform",
+    "Custom domain pdf-vaulty.com purchased via Hostinger but not yet connected",
+    "Deployment issues experienced with versions 30 and 31 showing canister ID resolution errors",
+    "Version 29 being relaunched as last known stable version before deployment issues"
   ],
   "known_issues": [
-    "Recent AI build errors when attempting to add PowerPoint conversion",
-    "Canister experienced 'Canister ID Not Resolved' error after Version 30 deployment"
+    "Version 30 and 31 deployments failed - canister ID not resolving properly",
+    "Old canister URL (5e6c2-5iaaa-aaaal-qnfna-cai.icp0.io) shows 'Canister ID Not Resolved' error",
+    "New Caffeine domain (pdfvaulty-url.caffeine.xyz) shows 'Publish or restore' message despite live notification",
+    "PowerPoint to PDF feature (version 31) deployment corrupted the live site"
   ],
-  "isFixRequest": false,
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-add-a-new-powerpointtopdfpage-component-at-frontend-src-pages-powerpointtopdfpage-tsx-that-allows-users-to-upload-powerpoint-files-ppt-pptx-and-convert-them-to-pdf-format-with-drag-and-drop-file-upload-support-following-the-same-ui-patterns-as-exceltopdfpage-and-wordtopdfpage",
-      "title": "Add a new PowerPointToPdfPage component at frontend/src/pages/PowerPointToPdfPage.tsx that allows users to upload PowerPoint files (.ppt, .pptx) and convert them to PDF format with drag-and-drop file upload support, following the same UI patterns as ExcelToPdfPage and WordToPdfPage",
+      "id": "feature-restore-the-application-to-version-29-state-which-was-the-last-stable-deployment-before-version-30-and-31-failed-this-version-should-include-all-core-pdf-tools-merge-split-compress-rotate-protect-word-to-pdf-excel-to-pdf-image-to-pdf-but-exclude-the-powerpoint-to-pdf-feature-that-caused-deployment-issues",
+      "title": "Restore the application to Version 29 state, which was the last stable deployment before Version 30 and 31 failed. This version should include all core PDF tools (merge, split, compress, rotate, protect, Word to PDF, Excel to PDF, Image to PDF) but exclude the PowerPoint to PDF feature that caused deployment issues.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-create-a-utility-function-frontend-src-utils-powerpointtopdf-ts-that-converts-powerpoint-files-to-pdf-format-following-the-same-structure-and-error-handling-patterns-as-exceltopdf-ts-and-wordtopdf-ts-with-progress-callback-support",
-      "title": "Create a utility function frontend/src/utils/powerPointToPdf.ts that converts PowerPoint files to PDF format, following the same structure and error handling patterns as excelToPdf.ts and wordToPdf.ts, with progress callback support",
+      "id": "feature-remove-all-powerpoint-to-pdf-conversion-functionality-from-the-codebase-including-the-powerpointtopdfpage-component-powerpointtopdf-utility-function-and-related-routes-since-this-feature-caused-the-deployment-failures-in-versions-30-and-31",
+      "title": "Remove all PowerPoint to PDF conversion functionality from the codebase, including the PowerPointToPdfPage component, powerPointToPdf utility function, and related routes, since this feature caused the deployment failures in versions 30 and 31.",
       "reqIds": [
         "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-powerpoint-to-pdf-card-to-the-convertintopdfpage-grid-at-frontend-src-pages-convertintopdfpage-tsx-that-links-to-the-new-powerpoint-conversion-page-positioned-after-the-excel-to-pdf-card-and-following-the-same-styling-pattern",
-      "title": "Add a PowerPoint to PDF card to the ConvertIntoPdfPage grid at frontend/src/pages/ConvertIntoPdfPage.tsx that links to the new PowerPoint conversion page, positioned after the Excel to PDF card and following the same styling pattern",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-routing-configuration-for-the-powerpoint-to-pdf-page-in-frontend-src-app-tsx-creating-a-new-route-at-tools-powerpoint-to-pdf-that-lazy-loads-powerpointtopdfpage-following-the-same-pattern-as-other-tool-routes",
-      "title": "Add routing configuration for the PowerPoint to PDF page in frontend/src/App.tsx, creating a new route at /tools/powerpoint-to-pdf that lazy-loads PowerPointToPdfPage, following the same pattern as other tool routes",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-internationalization-keys-for-powerpoint-to-pdf-feature-in-frontend-src-i18n-translations-ts-including-page-titles-upload-instructions-button-labels-and-error-messages-in-both-english-and-spanish-following-the-naming-pattern-used-for-other-conversion-tools",
-      "title": "Add internationalization keys for PowerPoint to PDF feature in frontend/src/i18n/translations.ts, including page titles, upload instructions, button labels, and error messages in both English and Spanish, following the naming pattern used for other conversion tools",
-      "reqIds": [
-        "REQ-5"
       ],
       "version": 1
     }
   ],
   "new_feature_requests": [
     {
-      "id": "AR-1",
-      "summary": "PowerPoint to PDF conversion",
-      "reqIds": [],
-      "status": "in_progress"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Add a PowerPoint to PDF link to the homepage tool grid at frontend/src/pages/HomePage.tsx, positioned logically among other conversion tools with appropriate icon and description",
+      "id": "AR-3",
+      "summary": "Ensure the deployed application is accessible at the pdfvaulty-url.caffeine.xyz domain shown in the user's screenshots, with proper canister deployment that resolves without errors.",
       "reqIds": [
-        "REQ-6"
+        "REQ-3"
       ],
       "status": "pending"
     }

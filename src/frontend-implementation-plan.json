@@ -1,109 +1,105 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add PowerPoint to PDF conversion feature",
+  "title": "Restore PDF Vaulty to Version 29 (Pre-PowerPoint Deployment)",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Create PowerPointToPdfPage component with drag-and-drop file upload for .ppt/.pptx files",
+      "summary": "Restore application to Version 29 state with all core PDF tools except PowerPoint conversion",
       "acceptanceCriteria": [
-        "Page accepts .ppt and .pptx file types for upload",
-        "Drag-and-drop file zone validates PowerPoint file types",
-        "Conversion progress tracking displays during processing",
-        "Successful conversion allows user to download the resulting PDF",
-        "Page requires authentication before allowing conversion",
-        "AdSense ad placements match the pattern used in other conversion pages"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/PowerPointToPdfPage.tsx",
-          "operation": "create",
-          "description": "Create a new page component for PowerPoint to PDF conversion. Follow the exact structure and patterns from ExcelToPdfPage.tsx and WordToPdfPage.tsx: include useInternetIdentity hook for authentication check, DragAndDropFileZone with accept prop for .ppt and .pptx files, state management for file upload/conversion progress, handleConvert function calling the powerPointToPdf utility, AdSenseHeader and AdSenseInContent components for ad placements, and internationalization using useI18n. Display conversion progress with percentage, show download button on success, and handle errors with toast notifications."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Create powerPointToPdf utility function for converting PowerPoint files to PDF",
-      "acceptanceCriteria": [
-        "Function accepts PowerPoint file blobs as input",
-        "Function validates file type is .ppt or .pptx",
-        "Function provides progress callback for UI updates",
-        "Function returns a PDF blob on successful conversion",
-        "Function throws descriptive errors for invalid inputs or conversion failures"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/utils/powerPointToPdf.ts",
-          "operation": "create",
-          "description": "Create a utility function matching the structure of excelToPdf.ts and wordToPdf.ts. Accept parameters: file (File), onProgress callback (optional). Validate file type is .ppt or .pptx using file.name.endsWith checks. Include progress tracking callbacks at key conversion steps (0%, 50%, 100%). Since PowerPoint conversion requires server-side processing like Word documents, throw a descriptive error indicating that PowerPoint to PDF conversion requires backend processing and is not yet fully implemented. Return Promise<Blob> type signature. Include comprehensive error handling with user-friendly error messages."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Add PowerPoint to PDF card to ConvertIntoPdfPage grid",
-      "acceptanceCriteria": [
-        "Card displays appropriate icon and title for PowerPoint to PDF",
-        "Card links to /tools/powerpoint-to-pdf route",
-        "Card styling matches existing Word and Excel conversion cards",
-        "Card is positioned logically in the grid layout"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/ConvertIntoPdfPage.tsx",
-          "operation": "modify",
-          "description": "Add a new card entry to the conversion tools grid after the Excel to PDF card. Use t('tools.powerPointToPdf.title') for the title, t('tools.powerPointToPdf.description') for the description text. Set the link to='/tools/powerpoint-to-pdf'. Use an appropriate icon (FilePresentation from lucide-react or similar presentation-related icon). Match the Card component structure with CardHeader, CardTitle, CardDescription, and hover effects identical to the existing Word and Excel cards. Position the card in the grid between Excel and Image conversion options."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Add /tools/powerpoint-to-pdf route to App.tsx router configuration",
-      "acceptanceCriteria": [
-        "Route /tools/powerpoint-to-pdf is registered in the router configuration",
-        "Route lazy-loads the PowerPointToPdfPage component",
-        "Route follows the same authentication and layout patterns as other tool pages"
+        "Application deploys successfully to a working canister with a valid URL",
+        "All existing PDF tools function correctly (merge, split, compress, rotate, protect, convert)",
+        "PowerPoint to PDF feature is removed from the conversion tools page",
+        "PowerPoint to PDF route is removed from the router configuration",
+        "User authentication and file management features work properly",
+        "AdSense monetization and traffic counter remain functional",
+        "Application is accessible at a stable URL without 'Canister ID Not Resolved' errors"
       ],
       "file_operations": [
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Add a new route entry in the createBrowserRouter configuration for path '/tools/powerpoint-to-pdf'. Use lazy loading with React.lazy(() => import('./pages/PowerPointToPdfPage')). Position this route after the /tools/excel-to-pdf route and before /tools/image-to-pdf route in the tools section. Ensure it follows the same authentication check pattern and layout wrapper as other conversion tool routes."
+          "description": "Remove the PowerPointToPdfPage route from the TanStack Router configuration to prevent the /convert/powerpoint path from being accessible. Ensure all other tool routes (merge, split, compress, rotate, protect, word-to-pdf, excel-to-pdf, image-to-pdf) remain intact and properly registered."
+        },
+        {
+          "path": "frontend/src/pages/ConvertIntoPdfPage.tsx",
+          "operation": "modify",
+          "description": "Remove the PowerPoint to PDF tool card from the conversion options grid. Keep only Word, Excel, and Image to PDF conversion options visible and navigable. Ensure the layout adjusts appropriately with three tools instead of four."
+        },
+        {
+          "path": "frontend/src/pages/PowerPointToPdfPage.tsx",
+          "operation": "delete",
+          "description": "Delete the PowerPointToPdfPage component file entirely to remove all PowerPoint conversion UI from the codebase."
+        },
+        {
+          "path": "frontend/src/utils/powerPointToPdf.ts",
+          "operation": "delete",
+          "description": "Delete the PowerPoint to PDF utility function file to remove all PowerPoint conversion logic from the codebase."
         }
       ]
     },
     {
-      "id": "REQ-5",
-      "summary": "Add internationalization keys for PowerPoint to PDF feature in English and Spanish",
+      "id": "REQ-2",
+      "summary": "Remove all PowerPoint to PDF conversion functionality from the codebase",
       "acceptanceCriteria": [
-        "English translations added for all PowerPoint to PDF UI text",
-        "Spanish translations added for all PowerPoint to PDF UI text",
-        "Translation keys follow the established naming convention (e.g., tools.powerPointToPdf.*)",
-        "All user-facing text in PowerPointToPdfPage uses i18n hooks"
+        "PowerPointToPdfPage.tsx is removed or excluded from the build",
+        "powerPointToPdf.ts utility is removed or excluded from the build",
+        "PowerPoint option is removed from the ConvertIntoPdfPage tool grid",
+        "No PowerPoint-related routes exist in App.tsx router configuration",
+        "Application builds and deploys without PowerPoint dependencies"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/i18n/translations.ts",
+          "path": "frontend/src/pages/PowerPointToPdfPage.tsx",
+          "operation": "delete",
+          "description": "Remove the PowerPointToPdfPage component that provides the PowerPoint to PDF conversion UI, including file upload, progress tracking, and download functionality."
+        },
+        {
+          "path": "frontend/src/utils/powerPointToPdf.ts",
+          "operation": "delete",
+          "description": "Remove the PowerPoint to PDF conversion utility function that was causing deployment issues in versions 30 and 31."
+        },
+        {
+          "path": "frontend/src/pages/ConvertIntoPdfPage.tsx",
           "operation": "modify",
-          "description": "Add a new 'powerPointToPdf' section under 'tools' in both 'en' and 'es' translation objects. Include keys for: title (e.g., 'PowerPoint to PDF'), description (short feature description), uploadInstruction (drag-and-drop instructions), selectFile (button text), convert (convert button), converting (progress text), success (success message), download (download button), errors.invalidFile, errors.conversionFailed, errors.notImplemented. Follow the exact naming pattern used for excelToPdf and wordToPdf sections. Ensure Spanish translations are accurate and natural."
+          "description": "Remove the PowerPoint to PDF tool card from the conversion tools grid. Update the grid to display only the three remaining conversion options (Word, Excel, Image to PDF) with appropriate spacing and layout."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Remove the /convert/powerpoint route registration from the router configuration. Verify that the PowerPointToPdfPage import is removed and that all other routes (merge, split, compress, rotate, protect, word-to-pdf, excel-to-pdf, image-to-pdf, analytics, my-files, admin, monetization-settings) remain properly configured."
         }
       ]
     },
     {
-      "id": "REQ-6",
-      "summary": "Add PowerPoint to PDF link to HomePage tool grid",
+      "id": "REQ-3",
+      "summary": "Ensure deployed application is accessible at pdfvaulty-url.caffeine.xyz domain without errors",
       "acceptanceCriteria": [
-        "Link card appears on the homepage tool grid",
-        "Card includes PowerPoint-related icon",
-        "Card description clearly indicates PowerPoint to PDF conversion",
-        "Card navigates to /tools/powerpoint-to-pdf when clicked"
+        "Application deploys to a valid canister ID on the Internet Computer",
+        "The pdfvaulty-url.caffeine.xyz domain properly resolves to the deployed canister",
+        "Homepage loads without 'Publish or restore your Caffeine app' message",
+        "No 'Canister ID Not Resolved' errors occur when accessing the site"
       ],
       "file_operations": [
         {
           "path": "frontend/src/pages/HomePage.tsx",
           "operation": "modify",
-          "description": "Add a new card to the tool grid section in HomePage. Position it logically after the Excel to PDF card and before the Image to PDF card. Use FilePresentation icon from lucide-react or similar. Set the link to='/tools/powerpoint-to-pdf'. Use t('tools.powerPointToPdf.title') for the card title and t('tools.powerPointToPdf.description') for the description text. Match the Card component structure, styling, and hover effects of existing tool cards. Ensure the card follows the same responsive grid layout pattern."
+          "description": "Verify that the HomePage renders the hero section with all tool cards (merge, split, compress, rotate, protect, convert) correctly. Ensure the 'Get Started' and 'View All Tools' CTAs function properly based on authentication state. Confirm that AdSense components (header, sidebar, footer) are properly integrated and do not block page rendering."
+        },
+        {
+          "path": "frontend/src/components/Header.tsx",
+          "operation": "modify",
+          "description": "Verify that the Header component renders properly with navigation links (home, analytics, my-files, admin), authentication controls (login/logout), theme toggle, language selector, and traffic counter. Ensure all navigation links use correct paths and that the component does not cause rendering failures during deployment."
+        },
+        {
+          "path": "frontend/src/hooks/useActor.ts",
+          "operation": "modify",
+          "description": "Verify that the useActor hook properly creates and manages the backend actor instance based on Internet Identity authentication state. Ensure the actor initialization does not cause deployment failures and that query invalidation works correctly when the actor changes."
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "operation": "modify",
+          "description": "Verify that the application entry point properly sets up React Query, Internet Identity provider, and renders the root App component without errors. Ensure all providers are correctly nested and that the application can successfully initialize during deployment."
         }
       ]
     }
